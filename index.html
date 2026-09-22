@@ -5,49 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PasFoto Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-[#0b132b] text-white min-h-screen flex items-center justify-center p-4">
 
-    <!-- Container Utama -->
-    <div class="w-full max-w-md bg-slate-800/80 backdrop-blur-md rounded-2xl border border-slate-700/50 p-8 shadow-2xl">
+    <div class="w-full max-w-md bg-[#1c2541]/80 backdrop-blur-lg rounded-2xl border border-slate-700/40 p-8 shadow-2xl">
         
         <!-- Header -->
-        <div class="text-center mb-8">
+        <div class="text-center mb-6">
             <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600/20 text-blue-400 rounded-2xl mb-4 border border-blue-500/30">
-                <i data-lucide="camera" class="w-8 h-8"></i>
+                <i class="fa-solid fa-camera text-2xl"></i>
             </div>
             <h1 class="text-2xl font-bold text-white tracking-wide">PasFoto Studio</h1>
             <p class="text-sm text-slate-400 mt-1" id="form-subtitle">Masuk ke Akun Anda</p>
         </div>
 
-        <!-- Notification Banner -->
-        <div id="alert-box" class="hidden mb-6 p-4 rounded-xl text-sm font-medium transition-all"></div>
+        <!-- Alert Box -->
+        <div id="alert-box" class="hidden mb-6 p-4 rounded-xl text-sm font-medium"></div>
 
         <!-- Form Login -->
         <form id="login-form" class="space-y-4" onsubmit="handleLogin(event)">
             <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Username</label>
                 <div class="relative">
-                    <i data-lucide="user" class="absolute left-3.5 top-3.5 w-5 h-5 text-slate-500"></i>
-                    <input type="text" id="login-username" required class="w-full pl-11 pr-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all text-sm" placeholder="Masukkan username">
+                    <i class="fa-regular fa-user absolute left-4 top-3.5 text-slate-400"></i>
+                    <input type="text" id="login-username" required class="w-full pl-11 pr-4 py-3 bg-[#0b132b]/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white text-sm" placeholder="Masukkan username">
                 </div>
             </div>
 
             <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Password</label>
                 <div class="relative">
-                    <i data-lucide="lock" class="absolute left-3.5 top-3.5 w-5 h-5 text-slate-500"></i>
-                    <input type="password" id="login-password" required class="w-full pl-11 pr-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all text-sm" placeholder="••••••••">
+                    <i class="fa-solid fa-lock absolute left-4 top-3.5 text-slate-400"></i>
+                    <input type="password" id="login-password" required class="w-full pl-11 pr-4 py-3 bg-[#0b132b]/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white text-sm" placeholder="••••••••">
                 </div>
             </div>
 
             <div class="flex items-center justify-between text-xs pt-1">
-                <button type="button" onclick="switchTab('recovery')" class="text-blue-400 hover:text-blue-300 transition-colors">Lupa Username / Password?</button>
+                <button type="button" onclick="switchTab('recovery')" class="text-blue-400 hover:text-blue-300">Lupa Username / Password?</button>
             </div>
 
-            <button type="submit" id="btn-login" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-600/20 text-sm mt-2 flex justify-center items-center gap-2">
-                <span>Masuk</span>
+            <button type="submit" id="btn-login" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-600/30 text-sm mt-2">
+                Masuk
             </button>
         </form>
 
@@ -56,82 +55,80 @@
             <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Email</label>
                 <div class="relative">
-                    <i data-lucide="mail" class="absolute left-3.5 top-3.5 w-5 h-5 text-slate-500"></i>
-                    <input type="email" id="reg-email" required class="w-full pl-11 pr-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all text-sm" placeholder="nama@email.com">
+                    <i class="fa-regular fa-envelope absolute left-4 top-3.5 text-slate-400"></i>
+                    <input type="email" id="reg-email" required class="w-full pl-11 pr-4 py-3 bg-[#0b132b]/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white text-sm" placeholder="nama@email.com">
                 </div>
             </div>
 
             <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Username</label>
                 <div class="relative">
-                    <i data-lucide="user" class="absolute left-3.5 top-3.5 w-5 h-5 text-slate-500"></i>
-                    <input type="text" id="reg-username" required class="w-full pl-11 pr-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all text-sm" placeholder="Pilih username">
+                    <i class="fa-regular fa-user absolute left-4 top-3.5 text-slate-400"></i>
+                    <input type="text" id="reg-username" required class="w-full pl-11 pr-4 py-3 bg-[#0b132b]/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white text-sm" placeholder="Username baru">
                 </div>
             </div>
 
             <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Password</label>
                 <div class="relative">
-                    <i data-lucide="lock" class="absolute left-3.5 top-3.5 w-5 h-5 text-slate-500"></i>
-                    <input type="password" id="reg-password" required class="w-full pl-11 pr-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all text-sm" placeholder="••••••••">
+                    <i class="fa-solid fa-lock absolute left-4 top-3.5 text-slate-400"></i>
+                    <input type="password" id="reg-password" required class="w-full pl-11 pr-4 py-3 bg-[#0b132b]/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white text-sm" placeholder="••••••••">
                 </div>
             </div>
 
-            <button type="submit" id="btn-register" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-600/20 text-sm mt-2">
-                <span>Daftar Akun</span>
+            <button type="submit" id="btn-register" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-600/30 text-sm mt-2">
+                Daftar Sekarang
             </button>
         </form>
 
-        <!-- Form Recovery (Lupa Password/Username) -->
+        <!-- Form Recovery -->
         <form id="recovery-form" class="space-y-4 hidden" onsubmit="handleSendCode(event)">
             <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Email Terdaftar</label>
                 <div class="relative">
-                    <i data-lucide="mail" class="absolute left-3.5 top-3.5 w-5 h-5 text-slate-500"></i>
-                    <input type="email" id="rec-email" required class="w-full pl-11 pr-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all text-sm" placeholder="nama@email.com">
+                    <i class="fa-regular fa-envelope absolute left-4 top-3.5 text-slate-400"></i>
+                    <input type="email" id="rec-email" required class="w-full pl-11 pr-4 py-3 bg-[#0b132b]/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white text-sm" placeholder="nama@email.com">
                 </div>
             </div>
 
-            <button type="submit" id="btn-send-code" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-all text-sm">
-                <span>Kirim Kode Verifikasi</span>
+            <button type="submit" id="btn-send-code" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl text-sm">
+                Kirim Kode Verifikasi
             </button>
         </form>
 
         <!-- Form Verify Code -->
         <form id="verify-form" class="space-y-4 hidden" onsubmit="handleVerifyCode(event)">
             <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Kode Verifikasi (Huruf)</label>
-                <input type="text" id="ver-code" required class="w-full px-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white text-center font-mono text-lg uppercase tracking-widest" placeholder="ABCDEF">
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Kode Verifikasi Email</label>
+                <input type="text" id="ver-code" required class="w-full px-4 py-3 bg-[#0b132b]/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white text-center font-mono text-lg uppercase tracking-widest" placeholder="ABCDEF">
             </div>
 
-            <button type="submit" id="btn-verify" class="w-full py-3.5 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl transition-all text-sm">
-                <span>Verifikasi Kode</span>
+            <button type="submit" id="btn-verify" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-sm">
+                Verifikasi Kode
             </button>
         </form>
 
-        <!-- Dashboard / Logged In State -->
-        <div id="dashboard-view" class="hidden text-center space-y-6">
-            <div class="p-6 bg-slate-900/80 rounded-xl border border-slate-700/50">
-                <i data-lucide="check-circle-2" class="w-12 h-12 text-emerald-400 mx-auto mb-3"></i>
-                <h2 class="text-xl font-bold text-white mb-1">Selamat Datang!</h2>
-                <p class="text-sm text-slate-400 mb-4" id="user-welcome-text"></p>
-                <button onclick="handleLogout()" class="px-6 py-2.5 bg-red-600/20 border border-red-500/30 text-red-400 hover:bg-red-600/30 font-medium text-sm rounded-xl transition-all">
+        <!-- Dashboard User -->
+        <div id="dashboard-view" class="hidden text-center space-y-4">
+            <div class="p-6 bg-[#0b132b]/60 rounded-xl border border-slate-700/50">
+                <i class="fa-solid fa-circle-check text-4xl text-emerald-400 mb-3"></i>
+                <h2 class="text-xl font-bold text-white">Login Berhasil!</h2>
+                <p class="text-sm text-slate-400 mt-2" id="user-welcome-text"></p>
+                <button onclick="switchTab('login')" class="mt-6 px-6 py-2 bg-red-600/20 border border-red-500/30 text-red-400 hover:bg-red-600/30 text-sm rounded-xl">
                     Keluar / Logout
                 </button>
             </div>
         </div>
 
-        <!-- Footer Navigation -->
-        <div class="mt-8 pt-6 border-t border-slate-700/50 text-center text-xs text-slate-400" id="footer-nav">
+        <!-- Footer -->
+        <div class="mt-6 pt-6 border-t border-slate-700/50 text-center text-xs text-slate-400" id="footer-nav">
             <span id="nav-text">Belum punya akun?</span>
-            <button type="button" onclick="toggleAuthMode()" id="nav-btn" class="ml-1 text-blue-400 hover:text-blue-300 font-semibold transition-colors">Daftar sekarang</button>
+            <button type="button" onclick="toggleAuthMode()" id="nav-btn" class="ml-1 text-blue-400 hover:text-blue-300 font-semibold">Daftar sekarang</button>
         </div>
 
     </div>
 
     <script>
-        lucide.createIcons();
-
         let currentTab = 'login';
 
         function showAlert(msg, isError = true) {
@@ -190,6 +187,15 @@
             else switchTab('login');
         }
 
+        async function sendRequest(url, payload) {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            return await res.json();
+        }
+
         async function handleLogin(e) {
             e.preventDefault();
             hideAlert();
@@ -197,26 +203,20 @@
             btn.disabled = true;
             btn.innerText = 'Memproses...';
 
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-
             try {
-                const res = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
+                const data = await sendRequest('/api/login', {
+                    username: document.getElementById('login-username').value,
+                    password: document.getElementById('login-password').value
                 });
 
-                const data = await res.json();
-
-                if (res.ok && data.status === 'success') {
-                    document.getElementById('user-welcome-text').innerText = `Login sebagai: @${data.user.username} (${data.user.email})`;
+                if (data.status === 'success') {
+                    document.getElementById('user-welcome-text').innerText = `Halo @${data.user.username} (${data.user.email})`;
                     switchTab('dashboard');
                 } else {
                     showAlert(data.message || 'Login gagal!');
                 }
             } catch (err) {
-                showAlert('Gagal terhubung ke server. Periksa koneksi internet Anda.');
+                showAlert('Gagal terhubung ke server.');
             } finally {
                 btn.disabled = false;
                 btn.innerText = 'Masuk';
@@ -230,20 +230,14 @@
             btn.disabled = true;
             btn.innerText = 'Memproses...';
 
-            const email = document.getElementById('reg-email').value;
-            const username = document.getElementById('reg-username').value;
-            const password = document.getElementById('reg-password').value;
-
             try {
-                const res = await fetch('/api/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, username, password })
+                const data = await sendRequest('/api/register', {
+                    email: document.getElementById('reg-email').value,
+                    username: document.getElementById('reg-username').value,
+                    password: document.getElementById('reg-password').value
                 });
 
-                const data = await res.json();
-
-                if (res.ok && data.status === 'success') {
+                if (data.status === 'success') {
                     showAlert('Registrasi berhasil! Silakan login.', false);
                     setTimeout(() => switchTab('login'), 1500);
                 } else {
@@ -253,7 +247,7 @@
                 showAlert('Gagal terhubung ke server.');
             } finally {
                 btn.disabled = false;
-                btn.innerText = 'Daftar Akun';
+                btn.innerText = 'Daftar Sekarang';
             }
         }
 
@@ -264,25 +258,19 @@
             btn.disabled = true;
             btn.innerText = 'Mengirim...';
 
-            const email = document.getElementById('rec-email').value;
-
             try {
-                const res = await fetch('/api/send-code', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
+                const data = await sendRequest('/api/send-code', {
+                    email: document.getElementById('rec-email').value
                 });
 
-                const data = await res.json();
-
-                if (res.ok && data.status === 'success') {
-                    showAlert('Kode verifikasi telah dikirim ke email Anda!', false);
+                if (data.status === 'success') {
+                    showAlert('Kode verifikasi telah dikirim ke email!', false);
                     setTimeout(() => switchTab('verify'), 1500);
                 } else {
                     showAlert(data.message || 'Gagal mengirim kode.');
                 }
             } catch (err) {
-                showAlert('Terjadi kesalahan jaringan.');
+                showAlert('Kesalahan jaringan.');
             } finally {
                 btn.disabled = false;
                 btn.innerText = 'Kirim Kode Verifikasi';
@@ -296,34 +284,23 @@
             btn.disabled = true;
             btn.innerText = 'Memverifikasi...';
 
-            const email = document.getElementById('rec-email').value;
-            const code = document.getElementById('ver-code').value;
-
             try {
-                const res = await fetch('/api/verify-code', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, code })
+                const data = await sendRequest('/api/verify-code', {
+                    email: document.getElementById('rec-email').value,
+                    code: document.getElementById('ver-code').value
                 });
 
-                const data = await res.json();
-
-                if (res.ok && data.status === 'success') {
-                    showAlert(`Username: @${data.user.username} | Password sementara dikirim/diubah!`, false);
+                if (data.status === 'success') {
+                    showAlert(`Username: @${data.user.username} | Password berhasil diperbarui!`, false);
                 } else {
-                    showAlert(data.message || 'Kode verifikasi tidak valid atau telah kadaluarsa.');
+                    showAlert(data.message || 'Kode tidak valid.');
                 }
             } catch (err) {
-                showAlert('Terjadi kesalahan jaringan.');
+                showAlert('Kesalahan jaringan.');
             } finally {
                 btn.disabled = false;
                 btn.innerText = 'Verifikasi Kode';
             }
-        }
-
-        function handleLogout() {
-            switchTab('login');
-            showAlert('Anda telah keluar dari akun.', false);
         }
     </script>
 </body>
