@@ -25,14 +25,14 @@ module.exports = async (req, res) => {
       return res.status(400).json({ status: 'error', message: 'Email tidak terdaftar!' });
     }
 
-    // 2. Buat kode verifikasi acak 6 huruf kapital
+    // 2. Buat kode verifikasi acak 6 huruf kapital (contoh: ABCDEF)
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let code = '';
     for (let i = 0; i < 6; i++) {
       code += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
     }
 
-    // 3. Simpan kode verifikasi & waktu kadaluarsa (15 menit)
+    // 3. Simpan kode verifikasi & waktu kadaluarsa (15 menit) ke database
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
     await client.query(
       'UPDATE users SET reset_code = $1, code_expires = $2 WHERE email = $3',
