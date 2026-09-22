@@ -482,7 +482,7 @@
       lucide.createIcons();
 
       /* -------------------------------------------------------------
-           MODAL & INTEGRASI API SERVERLESS VERCEL
+            MODAL & INTEGRASI API SERVERLESS VERCEL
         ------------------------------------------------------------- */
       function openAuthModal(mode) {
         document.getElementById("auth-modal").classList.remove("hidden");
@@ -544,11 +544,11 @@
       }
 
       async function handleLogin() {
-        const username = document.getElementById("login-username").value;
+        const usernameInput = document.getElementById("login-username").value;
         const password = document.getElementById("login-password").value;
         const btn = document.getElementById("btn-submit-login");
 
-        if (!username || !password) {
+        if (!usernameInput || !password) {
           alert("Harap isi username dan password!");
           return;
         }
@@ -560,12 +560,14 @@
           const res = await fetch('/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ username: usernameInput, password })
           });
           const data = await res.json();
           if (data.status === 'success') {
-            alert(`Selamat datang kembali, ${data.username}!`);
-            localStorage.setItem('user_session', data.username);
+            // Ambil username dari respon server
+            const finalUsername = data.username || (data.user && data.user.username) || usernameInput;
+            alert(`Selamat datang kembali, ${finalUsername}!`);
+            localStorage.setItem('user_session', finalUsername);
             checkUserSession();
             closeAuthModal();
           } else {
@@ -658,7 +660,7 @@
         const userProfile = document.getElementById('user-profile');
         const displayName = document.getElementById('user-display-name');
 
-        if (username) {
+        if (username && username !== "undefined") {
           authBtns.classList.add('hidden');
           userProfile.classList.remove('hidden');
           userProfile.classList.add('flex');
@@ -679,7 +681,7 @@
       checkUserSession();
 
       /* -------------------------------------------------------------
-           AUTOSCALE LOGIC UNTUK HP
+            AUTOSCALE LOGIC UNTUK HP
         ------------------------------------------------------------- */
       function autoScaleDesktopView() {
         const wrapper = document.getElementById("app-wrapper");
@@ -704,7 +706,7 @@
       setTimeout(autoScaleDesktopView, 100);
 
       /* -------------------------------------------------------------
-           ANIMATED BACKGROUND: AURORA NEBULA & FLOATING PARTICLES
+            ANIMATED BACKGROUND: AURORA NEBULA & FLOATING PARTICLES
         ------------------------------------------------------------- */
       const bgCanvas = document.getElementById("bg-canvas");
       const bgCtx = bgCanvas.getContext("2d");
@@ -816,7 +818,7 @@
       animateBg();
 
       /* -------------------------------------------------------------
-           PASFOTO EDITOR CORE LOGIC
+            PASFOTO EDITOR CORE LOGIC
         ------------------------------------------------------------- */
       const imageUpload = document.getElementById("image-upload");
       const uploadStatusLabel = document.getElementById("upload-status-label");
