@@ -1,15 +1,16 @@
 const { Client } = require('pg');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).send('Method Not Allowed');
 
   const { email } = req.body;
 
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
-    return res.status(500).json({ status: 'error', message: 'GMAIL_USER / GMAIL_PASS belum diatur di Vercel!' });
+  if (!process.env.RESEND_API_KEY) {
+    return res.status(500).json({ status: 'error', message: 'RESEND_API_KEY belum diatur di Vercel!' });
   }
 
+  const resend = new Resend(process.env.RESEND_API_KEY);
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
@@ -38,19 +39,10 @@ module.exports = async (req, res) => {
       [code, expiresAt, email]
     );
 
-    // 4. Konfigurasi Transporter Nodemailer (Gmail)
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS
-      }
-    });
-
-    // 5. Kirim Email
-    await transporter.sendMail({
-      from: `"PasFoto Studio" <${process.env.GMAIL_USER}>`,
-      to: email,
+    // 4. Kirim email via Resend
+    const emailResult = await resend.emails.send({
+      from: 'PasFoto Studio <onboarding@resend.dev>',
+      to: [email],
       subject: 'Kode Verifikasi Pemulihan Akun PasFoto Studio',
       html: `<div style="font-family: sans-serif; padding: 20px; color: #333;">
               <h2>Pemulihan Akun PasFoto Studio</h2>
@@ -60,9 +52,16 @@ module.exports = async (req, res) => {
             </div>`
     });
 
-    res.status(200).json({ status: 'success', message: 'Kode verifikasi telah dikirim ke email Anda!' });
+    if (emailResult.error) {
+      return res.status(500).json({ 
+        status: 'error', 
+        message: `Gagal mengirim email: ${emailResult.error.message}` 
+      });
+    }
+
+    res.status(200).json({ status: 'success', message: 'Kode verifikasi telah dikirim! Silakan periksa Kotak Masuk atau Folder SPAM email Anda.' });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: `Gagal mengirim email: ${err.message}` });
+    res.status(500).json({ status: 'error', message: `Server Error: ${err.message}` });
   } finally {
     await client.end();
   }
