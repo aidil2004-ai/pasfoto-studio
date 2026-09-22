@@ -1,1393 +1,330 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <title>PasFoto Pro Studio - Pengubah Ukuran Pasfoto</title>
-    <!-- Tailwind CSS CDN -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PasFoto Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap");
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
 
-      body {
-        font-family: "Plus Jakarta Sans", sans-serif;
-        background-color: #090d16;
-        color: #f8fafc;
-        overflow-x: hidden;
-      }
-
-      /* Animated Background Canvas */
-      #bg-canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: 0;
-        pointer-events: none;
-      }
-
-      /* Glassmorphism Styles */
-      .glass-panel {
-        background: rgba(15, 23, 42, 0.75);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-      }
-
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: rgba(15, 23, 42, 0.6);
-      }
-      ::-webkit-scrollbar-thumb {
-        background: rgba(99, 102, 241, 0.5);
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: rgba(99, 102, 241, 0.8);
-      }
-
-      /* Interactive Canvas Style */
-      #preview-canvas {
-        cursor: grab;
-        box-shadow:
-          0 20px 25px -5px rgba(0, 0, 0, 0.5),
-          0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      }
-      #preview-canvas:active {
-        cursor: grabbing;
-      }
-
-      /* Disabled Button Style */
-      button:disabled {
-        opacity: 0.35 !important;
-        cursor: not-allowed !important;
-        pointer-events: none !important;
-        filter: grayscale(100%);
-      }
-
-      /* Preset Active State */
-      .preset-btn.active {
-        background-color: #4f46e5 !important;
-        border-color: #6366f1 !important;
-        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
-      }
-
-      /* Layout Mini Desktop untuk Layar HP */
-      @media (max-width: 1023px) {
-        .desktop-mini-container {
-          width: 1024px !important;
-          transform-origin: top left;
-        }
-
-        main {
-          flex-direction: row !important;
-          max-width: 1024px !important;
-          padding-left: 1.5rem !important;
-          padding-right: 1.5rem !important;
-        }
-
-        section.w-full.lg\:w-96 {
-          width: 320px !important;
-          flex-shrink: 0 !important;
-        }
-
-        section.flex-1 {
-          flex: 1 1 0% !important;
-        }
-
-        .hidden.sm\:flex {
-          display: flex !important;
-        }
-
-        .flex-col.sm\:flex-row {
-          flex-direction: row !important;
-        }
-
-        .w-full.sm\:w-auto {
-          width: auto !important;
-        }
-
-        .flex-1.sm\:flex-initial {
-          flex: initial !important;
-        }
-      }
-    </style>
-  </head>
-  <body
-    class="min-h-screen relative flex flex-col selection:bg-indigo-500 selection:text-white overflow-x-hidden"
-  >
-    <!-- Background Animated Fluid & Particle Canvas -->
-    <canvas id="bg-canvas"></canvas>
-
-    <!-- Content Wrapper -->
-    <div
-      id="app-wrapper"
-      class="relative z-10 flex flex-col min-h-screen desktop-mini-container"
-    >
-      <!-- Header / Navbar -->
-      <header
-        class="w-full border-b border-slate-800/80 glass-panel sticky top-0 z-30"
-      >
-        <div
-          class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between"
-        >
-          <div class="flex items-center gap-3">
-            <div
-              class="p-2.5 bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 rounded-2xl shadow-lg shadow-indigo-500/30 animate-pulse"
-            >
-              <i data-lucide="image-rotate" class="w-7 h-7 text-white"></i>
+    <!-- Container Utama -->
+    <div class="w-full max-w-md bg-slate-800/80 backdrop-blur-md rounded-2xl border border-slate-700/50 p-8 shadow-2xl">
+        
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600/20 text-blue-400 rounded-2xl mb-4 border border-blue-500/30">
+                <i data-lucide="camera" class="w-8 h-8"></i>
             </div>
-            <div>
-              <h1
-                class="text-xl sm:text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-indigo-400"
-              >
-                PasFoto Studio
-              </h1>
-              <p class="text-xs text-indigo-300 font-medium">
-                Ubah Ukuran Foto Instant & Cetak A4
-              </p>
-            </div>
-          </div>
-
-          <!-- Tombol Akses Akun: Login & Daftar -->
-          <div id="auth-buttons" class="flex items-center gap-3">
-            <button
-              type="button"
-              onclick="openAuthModal('login')"
-              class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-indigo-500/30 text-xs font-bold transition flex items-center gap-1.5"
-            >
-              <i data-lucide="log-in" class="w-4 h-4"></i> Login
-            </button>
-            <button
-              type="button"
-              onclick="openAuthModal('register')"
-              class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-xs font-bold shadow-lg shadow-indigo-500/20 transition flex items-center gap-1.5"
-            >
-              <i data-lucide="user-plus" class="w-4 h-4"></i> Daftar
-            </button>
-          </div>
-
-          <!-- Status User Setelah Login -->
-          <div id="user-profile" class="hidden items-center gap-3">
-            <span
-              id="user-display-name"
-              class="text-xs font-bold text-indigo-300 bg-indigo-500/10 border border-indigo-500/30 px-3 py-1.5 rounded-full"
-            ></span>
-            <button
-              onclick="handleLogout()"
-              class="text-xs font-bold text-rose-400 hover:underline"
-            >
-              Logout
-            </button>
-          </div>
+            <h1 class="text-2xl font-bold text-white tracking-wide">PasFoto Studio</h1>
+            <p class="text-sm text-slate-400 mt-1" id="form-subtitle">Masuk ke Akun Anda</p>
         </div>
-      </header>
 
-      <!-- Main Workspace -->
-      <main
-        class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8"
-      >
-        <!-- Left Controls Panel -->
-        <section class="w-full lg:w-96 flex flex-col gap-6">
-          <!-- Step 1: Upload File -->
-          <div
-            class="glass-panel p-6 rounded-3xl shadow-xl flex flex-col gap-4"
-          >
-            <h2 class="text-base font-bold text-white flex items-center gap-2">
-              <span
-                class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs"
-                >1</span
-              >
-              Unggah Foto
-            </h2>
+        <!-- Notification Banner -->
+        <div id="alert-box" class="hidden mb-6 p-4 rounded-xl text-sm font-medium transition-all"></div>
 
-            <label
-              for="image-upload"
-              class="group relative flex flex-col items-center justify-center border-2 border-dashed border-slate-700 hover:border-indigo-500 rounded-2xl p-6 transition-all duration-300 cursor-pointer bg-slate-900/40 hover:bg-indigo-950/20"
-            >
-              <input
-                type="file"
-                id="image-upload"
-                accept="image/*"
-                class="hidden"
-              />
-              <div
-                class="p-3 bg-indigo-500/10 rounded-full text-indigo-400 group-hover:scale-110 transition-transform duration-300"
-              >
-                <i data-lucide="upload-cloud" class="w-8 h-8"></i>
-              </div>
-              <span
-                class="mt-3 text-sm font-semibold text-slate-200"
-                id="upload-status-label"
-                >Pilih Foto Utama</span
-              >
-              <span class="text-xs text-slate-400 text-center mt-1"
-                >PNG, JPG, JPEG, atau WEBP</span
-              >
-            </label>
-          </div>
-
-          <!-- Step 2: Select Size Presets -->
-          <div
-            class="glass-panel p-6 rounded-3xl shadow-xl flex flex-col gap-4"
-          >
-            <h2 class="text-base font-bold text-white flex items-center gap-2">
-              <span
-                class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs"
-                >2</span
-              >
-              Pilih Ukuran Pasfoto
-            </h2>
-
-            <!-- Preset Option Buttons Grid -->
-            <div class="grid grid-cols-2 gap-2.5">
-              <button
-                type="button"
-                data-preset="2x3"
-                class="preset-btn px-3 py-3 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white transition-all flex flex-col items-center gap-0.5"
-              >
-                <span class="text-sm font-bold">2 x 3</span>
-                <span class="text-[10px] text-slate-400">2x3 cm</span>
-              </button>
-              <button
-                type="button"
-                data-preset="3x4"
-                class="preset-btn px-3 py-3 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white transition-all flex flex-col items-center gap-0.5"
-              >
-                <span class="text-sm font-bold">3 x 4</span>
-                <span class="text-[10px] text-slate-400">3x4 cm</span>
-              </button>
-              <button
-                type="button"
-                data-preset="4x6"
-                class="preset-btn px-3 py-3 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white transition-all flex flex-col items-center gap-0.5"
-              >
-                <span class="text-sm font-bold">4 x 6</span>
-                <span class="text-[10px] text-slate-400">4x6 cm</span>
-              </button>
-              <button
-                type="button"
-                data-preset="custom"
-                id="btn-preset-custom"
-                class="preset-btn px-3 py-3 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white transition-all flex flex-col items-center gap-0.5"
-              >
-                <span class="text-sm font-bold flex items-center gap-1">
-                  <i
-                    data-lucide="sliders"
-                    class="w-3.5 h-3.5 text-indigo-400"
-                  ></i>
-                  Custom
-                </span>
-                <span class="text-[10px] text-slate-400">Manual (px)</span>
-              </button>
-            </div>
-
-            <!-- Custom Size Input Panel -->
-            <div
-              id="custom-size-panel"
-              class="hidden flex-col gap-3 pt-3 border-t border-slate-800/80 mt-1"
-            >
-              <p class="text-[11px] font-semibold text-indigo-300">
-                Masukkan Dimensi Manual (Pixel):
-              </p>
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="text-[11px] text-slate-400 block mb-1"
-                    >Lebar (px)</label
-                  >
-                  <input
-                    type="number"
-                    id="custom-width"
-                    value="0"
-                    min="0"
-                    placeholder="0"
-                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500"
-                  />
+        <!-- Form Login -->
+        <form id="login-form" class="space-y-4" onsubmit="handleLogin(event)">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Username</label>
+                <div class="relative">
+                    <i data-lucide="user" class="absolute left-3.5 top-3.5 w-5 h-5 text-slate-500"></i>
+                    <input type="text" id="login-username" required class="w-full pl-11 pr-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all text-sm" placeholder="Masukkan username">
                 </div>
-                <div>
-                  <label class="text-[11px] text-slate-400 block mb-1"
-                    >Tinggi (px)</label
-                  >
-                  <input
-                    type="number"
-                    id="custom-height"
-                    value="0"
-                    min="0"
-                    placeholder="0"
-                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500"
-                  />
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Password</label>
+                <div class="relative">
+                    <i data-lucide="lock" class="absolute left-3.5 top-3.5 w-5 h-5 text-slate-500"></i>
+                    <input type="password" id="login-password" required class="w-full pl-11 pr-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all text-sm" placeholder="••••••••">
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Step 3: Adjustments -->
-          <div
-            class="glass-panel p-6 rounded-3xl shadow-xl flex flex-col gap-4"
-          >
-            <h2 class="text-base font-bold text-white flex items-center gap-2">
-              <span
-                class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs"
-                >3</span
-              >
-              Penyesuaian Posisi
-            </h2>
-
-            <!-- Zoom Slider -->
-            <div class="flex flex-col gap-1.5">
-              <div class="flex justify-between items-center text-xs">
-                <span class="text-slate-300 font-medium">Zoom / Skala</span>
-                <span id="zoom-val" class="text-indigo-400 font-bold"
-                  >100%</span
-                >
-              </div>
-              <input
-                type="range"
-                id="zoom-range"
-                min="10"
-                max="300"
-                value="100"
-                class="w-full accent-indigo-500 bg-slate-800 h-2 rounded-lg cursor-pointer"
-              />
             </div>
 
-            <!-- Rotation Slider -->
-            <div class="flex flex-col gap-1.5">
-              <div class="flex justify-between items-center text-xs">
-                <span class="text-slate-300 font-medium">Rotasi Gambar</span>
-                <span id="rotate-val" class="text-indigo-400 font-bold"
-                  >0°</span
-                >
-              </div>
-              <input
-                type="range"
-                id="rotate-range"
-                min="-180"
-                max="180"
-                value="0"
-                class="w-full accent-indigo-500 bg-slate-800 h-2 rounded-lg cursor-pointer"
-              />
+            <div class="flex items-center justify-between text-xs pt-1">
+                <button type="button" onclick="switchTab('recovery')" class="text-blue-400 hover:text-blue-300 transition-colors">Lupa Username / Password?</button>
             </div>
 
-            <button
-              type="button"
-              id="btn-reset"
-              class="w-full py-2 bg-slate-800/80 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold border border-slate-700 transition flex items-center justify-center gap-2 mt-2"
-            >
-              <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset Posisi Foto
+            <button type="submit" id="btn-login" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-600/20 text-sm mt-2 flex justify-center items-center gap-2">
+                <span>Masuk</span>
             </button>
-          </div>
-        </section>
+        </form>
 
-        <!-- Right Preview & Export Panel -->
-        <section class="flex-1 flex flex-col gap-6">
-          <!-- Main Canvas Preview Container -->
-          <div
-            class="glass-panel p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col items-center justify-center min-h-[420px] relative overflow-hidden"
-          >
-            <div
-              class="absolute top-4 left-4 flex items-center gap-2 text-xs text-slate-400 font-medium"
-            >
-              <i data-lucide="move" class="w-4 h-4 text-indigo-400"></i> Klik &
-              Geser foto untuk sesuaikan posisi
+        <!-- Form Register -->
+        <form id="register-form" class="space-y-4 hidden" onsubmit="handleRegister(event)">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Email</label>
+                <div class="relative">
+                    <i data-lucide="mail" class="absolute left-3.5 top-3.5 w-5 h-5 text-slate-500"></i>
+                    <input type="email" id="reg-email" required class="w-full pl-11 pr-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all text-sm" placeholder="nama@email.com">
+                </div>
             </div>
 
-            <!-- Real-time Canvas -->
-            <div
-              class="p-3 bg-slate-950/80 border border-slate-800 rounded-2xl shadow-2xl relative my-6"
-            >
-              <canvas
-                id="preview-canvas"
-                width="250"
-                height="350"
-                class="rounded-lg bg-slate-900 border border-slate-800 transition-shadow"
-              ></canvas>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Username</label>
+                <div class="relative">
+                    <i data-lucide="user" class="absolute left-3.5 top-3.5 w-5 h-5 text-slate-500"></i>
+                    <input type="text" id="reg-username" required class="w-full pl-11 pr-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all text-sm" placeholder="Pilih username">
+                </div>
             </div>
 
-            <div class="text-center">
-              <p id="size-info-label" class="text-sm font-bold text-slate-200">
-                Foto Terunggah (Pilih Ukuran)
-              </p>
-              <p class="text-xs text-slate-400 mt-1">
-                Pilih salah satu tombol ukuran di sebelah kiri untuk
-                mengaktifkan unduh & cetak.
-              </p>
-            </div>
-          </div>
-
-          <!-- Export & Download Actions -->
-          <div
-            class="glass-panel p-6 rounded-3xl shadow-xl flex flex-col sm:flex-row gap-4 items-center justify-between"
-          >
-            <div class="flex items-center gap-3 w-full sm:w-auto">
-              <button
-                type="button"
-                id="btn-download-single"
-                disabled
-                class="flex-1 sm:flex-initial px-6 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold rounded-2xl shadow-lg shadow-indigo-500/25 transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                <i data-lucide="download" class="w-5 h-5"></i> Unduh Foto
-              </button>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Password</label>
+                <div class="relative">
+                    <i data-lucide="lock" class="absolute left-3.5 top-3.5 w-5 h-5 text-slate-500"></i>
+                    <input type="password" id="reg-password" required class="w-full pl-11 pr-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all text-sm" placeholder="••••••••">
+                </div>
             </div>
 
-            <button
-              type="button"
-              id="btn-download-a4"
-              disabled
-              class="w-full sm:w-auto px-6 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-2xl border border-slate-700 transition-all duration-300 flex items-center justify-center gap-2"
-            >
-              <i data-lucide="printer" class="w-5 h-5 text-indigo-400"></i> Buat
-              Lembar Cetak A4
+            <button type="submit" id="btn-register" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-600/20 text-sm mt-2">
+                <span>Daftar Akun</span>
             </button>
-          </div>
-        </section>
-      </main>
+        </form>
+
+        <!-- Form Recovery (Lupa Password/Username) -->
+        <form id="recovery-form" class="space-y-4 hidden" onsubmit="handleSendCode(event)">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Email Terdaftar</label>
+                <div class="relative">
+                    <i data-lucide="mail" class="absolute left-3.5 top-3.5 w-5 h-5 text-slate-500"></i>
+                    <input type="email" id="rec-email" required class="w-full pl-11 pr-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all text-sm" placeholder="nama@email.com">
+                </div>
+            </div>
+
+            <button type="submit" id="btn-send-code" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-all text-sm">
+                <span>Kirim Kode Verifikasi</span>
+            </button>
+        </form>
+
+        <!-- Form Verify Code -->
+        <form id="verify-form" class="space-y-4 hidden" onsubmit="handleVerifyCode(event)">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Kode Verifikasi (Huruf)</label>
+                <input type="text" id="ver-code" required class="w-full px-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500 text-white text-center font-mono text-lg uppercase tracking-widest" placeholder="ABCDEF">
+            </div>
+
+            <button type="submit" id="btn-verify" class="w-full py-3.5 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl transition-all text-sm">
+                <span>Verifikasi Kode</span>
+            </button>
+        </form>
+
+        <!-- Dashboard / Logged In State -->
+        <div id="dashboard-view" class="hidden text-center space-y-6">
+            <div class="p-6 bg-slate-900/80 rounded-xl border border-slate-700/50">
+                <i data-lucide="check-circle-2" class="w-12 h-12 text-emerald-400 mx-auto mb-3"></i>
+                <h2 class="text-xl font-bold text-white mb-1">Selamat Datang!</h2>
+                <p class="text-sm text-slate-400 mb-4" id="user-welcome-text"></p>
+                <button onclick="handleLogout()" class="px-6 py-2.5 bg-red-600/20 border border-red-500/30 text-red-400 hover:bg-red-600/30 font-medium text-sm rounded-xl transition-all">
+                    Keluar / Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer Navigation -->
+        <div class="mt-8 pt-6 border-t border-slate-700/50 text-center text-xs text-slate-400" id="footer-nav">
+            <span id="nav-text">Belum punya akun?</span>
+            <button type="button" onclick="toggleAuthMode()" id="nav-btn" class="ml-1 text-blue-400 hover:text-blue-300 font-semibold transition-colors">Daftar sekarang</button>
+        </div>
+
     </div>
 
-    <!-- Hidden Offscreen Canvas for A4 Generation -->
-    <canvas id="a4-canvas" class="hidden"></canvas>
-
-    <!-- MODAL FITUR AUTENTIKASI -->
-    <div
-      id="auth-modal"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md hidden"
-    >
-      <div
-        class="glass-panel p-8 rounded-3xl max-w-md w-full mx-4 relative border border-slate-700/80 shadow-2xl"
-      >
-        <button
-          onclick="closeAuthModal()"
-          class="absolute top-4 right-4 text-slate-400 hover:text-white transition"
-        >
-          <i data-lucide="x" class="w-6 h-6"></i>
-        </button>
-
-        <!-- FORM LOGIN -->
-        <div id="form-login" class="flex flex-col gap-4">
-          <h3 class="text-xl font-bold text-white flex items-center gap-2">
-            <i data-lucide="log-in" class="text-indigo-400"></i> Masuk ke Akun
-          </h3>
-          <div>
-            <label class="text-xs text-slate-300 font-medium block mb-1"
-              >Username</label
-            >
-            <input
-              type="text"
-              id="login-username"
-              placeholder="Masukkan Username"
-              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500"
-            />
-          </div>
-          <div>
-            <label class="text-xs text-slate-300 font-medium block mb-1"
-              >Password</label
-            >
-            <input
-              type="password"
-              id="login-password"
-              placeholder="Masukkan Password"
-              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500"
-            />
-          </div>
-          <div class="text-right">
-            <button
-              onclick="switchAuthForm('forgot')"
-              class="text-xs text-indigo-400 hover:underline font-semibold"
-            >
-              Lupa Username / Password?
-            </button>
-          </div>
-          <button
-            type="button"
-            id="btn-submit-login"
-            onclick="handleLogin()"
-            class="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 font-bold rounded-xl text-sm text-white shadow-lg transition hover:opacity-90 mt-2"
-          >
-            Login
-          </button>
-          <p class="text-xs text-slate-400 text-center mt-2">
-            Belum punya akun?
-            <button
-              onclick="switchAuthForm('register')"
-              class="text-indigo-400 font-semibold hover:underline"
-            >
-              Daftar sekarang
-            </button>
-          </p>
-        </div>
-
-        <!-- FORM DAFTAR -->
-        <div id="form-register" class="flex flex-col gap-4 hidden">
-          <h3 class="text-xl font-bold text-white flex items-center gap-2">
-            <i data-lucide="user-plus" class="text-indigo-400"></i> Buat Akun
-            Baru
-          </h3>
-          <div>
-            <label class="text-xs text-slate-300 font-medium block mb-1"
-              >Email</label
-            >
-            <input
-              type="email"
-              id="reg-email"
-              placeholder="contoh@email.com"
-              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500"
-            />
-          </div>
-          <div>
-            <label class="text-xs text-slate-300 font-medium block mb-1"
-              >Username</label
-            >
-            <input
-              type="text"
-              id="reg-username"
-              placeholder="Buat Username Baru"
-              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500"
-            />
-          </div>
-          <div>
-            <label class="text-xs text-slate-300 font-medium block mb-1"
-              >Password</label
-            >
-            <input
-              type="password"
-              id="reg-password"
-              placeholder="Buat Password"
-              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500"
-            />
-          </div>
-          <button
-            type="button"
-            id="btn-submit-register"
-            onclick="handleRegister()"
-            class="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 font-bold rounded-xl text-sm text-white shadow-lg transition hover:opacity-90 mt-2"
-          >
-            Daftar Akun
-          </button>
-          <p class="text-xs text-slate-400 text-center mt-2">
-            Sudah punya akun?
-            <button
-              onclick="switchAuthForm('login')"
-              class="text-indigo-400 font-semibold hover:underline"
-            >
-              Login di sini
-            </button>
-          </p>
-        </div>
-
-        <!-- FORM LUPA USERNAME / PASSWORD -->
-        <div id="form-forgot" class="flex flex-col gap-4 hidden">
-          <h3 class="text-xl font-bold text-white flex items-center gap-2">
-            <i data-lucide="key-round" class="text-indigo-400"></i> Pemulihan
-            Akun
-          </h3>
-
-          <!-- Tahap 1: Pilih Jenis Pemulihan & Email -->
-          <div id="forgot-step-1" class="flex flex-col gap-3">
-            <div>
-              <label class="text-xs text-slate-300 font-medium block mb-1"
-                >Pilih Masalah Anda</label
-              >
-              <select
-                id="forgot-type"
-                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500"
-              >
-                <option value="password">Lupa Password</option>
-                <option value="username">Lupa Username</option>
-              </select>
-            </div>
-            <div>
-              <label class="text-xs text-slate-300 font-medium block mb-1"
-                >Email Terdaftar</label
-              >
-              <input
-                type="email"
-                id="forgot-email"
-                placeholder="Masukkan email Anda"
-                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500"
-              />
-            </div>
-            <button
-              type="button"
-              id="btn-submit-sendcode"
-              onclick="handleSendCode()"
-              class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-sm text-white transition mt-2"
-            >
-              Kirim Kode Verifikasi Email
-            </button>
-          </div>
-
-          <!-- Tahap 2: Input Kode Verifikasi Huruf -->
-          <div id="forgot-step-2" class="flex flex-col gap-3 hidden">
-            <div
-              class="bg-indigo-950/40 border border-indigo-500/30 p-3 rounded-xl text-xs text-indigo-300"
-            >
-              Kode verifikasi huruf telah dikirim ke email Anda. Silakan periksa
-              kotak masuk/spam.
-            </div>
-            <div>
-              <label class="text-xs text-slate-300 font-medium block mb-1"
-                >Masukkan Kode Verifikasi (Hanya Huruf)</label
-              >
-              <input
-                type="text"
-                id="forgot-code"
-                placeholder="Contoh: ABCDEF"
-                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 tracking-widest uppercase font-mono text-center"
-              />
-            </div>
-            <div id="new-password-container">
-              <label class="text-xs text-slate-300 font-medium block mb-1"
-                >Password Baru</label
-              >
-              <input
-                type="password"
-                id="new-password"
-                placeholder="Masukkan Password Baru"
-                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500"
-              />
-            </div>
-            <button
-              type="button"
-              id="btn-submit-verify"
-              onclick="handleVerifyCode()"
-              class="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 font-bold rounded-xl text-sm text-white shadow-lg transition hover:opacity-90 mt-2"
-            >
-              Verifikasi & Pulihkan Akun
-            </button>
-          </div>
-
-          <div class="text-center mt-2">
-            <button
-              onclick="switchAuthForm('login')"
-              class="text-xs text-slate-400 hover:text-white"
-            >
-              Kembali ke Login
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- JavaScript Logic -->
     <script>
-      // Initialize Lucide Icons
-      lucide.createIcons();
+        lucide.createIcons();
 
-      /* -------------------------------------------------------------
-           MODAL & INTEGRASI API SERVERLESS VERCEL
-        ------------------------------------------------------------- */
-      function openAuthModal(mode) {
-        document.getElementById("auth-modal").classList.remove("hidden");
-        switchAuthForm(mode);
-      }
+        let currentTab = 'login';
 
-      function closeAuthModal() {
-        document.getElementById("auth-modal").classList.add("hidden");
-      }
-
-      function switchAuthForm(formType) {
-        document.getElementById("form-login").classList.add("hidden");
-        document.getElementById("form-register").classList.add("hidden");
-        document.getElementById("form-forgot").classList.add("hidden");
-
-        if (formType === "login") {
-          document.getElementById("form-login").classList.remove("hidden");
-        } else if (formType === "register") {
-          document.getElementById("form-register").classList.remove("hidden");
-        } else if (formType === "forgot") {
-          document.getElementById("form-forgot").classList.remove("hidden");
-          document.getElementById("forgot-step-1").classList.remove("hidden");
-          document.getElementById("forgot-step-2").classList.add("hidden");
-        }
-      }
-
-      // Handler Async Fetch untuk Register, Login, Send Code, & Verify
-      async function handleRegister() {
-        const email = document.getElementById("reg-email").value;
-        const username = document.getElementById("reg-username").value;
-        const password = document.getElementById("reg-password").value;
-        const btn = document.getElementById("btn-submit-register");
-
-        if (!email || !username || !password) {
-          alert("Harap isi semua kolom pendaftaran!");
-          return;
+        function showAlert(msg, isError = true) {
+            const box = document.getElementById('alert-box');
+            box.innerText = msg;
+            box.className = `mb-6 p-4 rounded-xl text-sm font-medium ${isError ? 'bg-red-500/20 border border-red-500/40 text-red-300' : 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300'}`;
+            box.classList.remove('hidden');
         }
 
-        btn.disabled = true;
-        btn.textContent = "Memproses...";
-
-        try {
-          const res = await fetch("/api/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, username, password }),
-          });
-          const data = await res.json();
-          alert(data.message);
-          if (data.status === "success") {
-            switchAuthForm("login");
-          }
-        } catch (err) {
-          alert("Terjadi kesalahan koneksi ke server!");
-        } finally {
-          btn.disabled = false;
-          btn.textContent = "Daftar Akun";
-        }
-      }
-
-      async function handleLogin() {
-        const username = document.getElementById("login-username").value;
-        const password = document.getElementById("login-password").value;
-        const btn = document.getElementById("btn-submit-login");
-
-        if (!username || !password) {
-          alert("Harap isi username dan password!");
-          return;
+        function hideAlert() {
+            document.getElementById('alert-box').classList.add('hidden');
         }
 
-        btn.disabled = true;
-        btn.textContent = "Memproses...";
+        function switchTab(tab) {
+            currentTab = tab;
+            hideAlert();
 
-        try {
-          const res = await fetch("/api/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password }),
-          });
-          const data = await res.json();
-          if (data.status === "success") {
-            alert(`Selamat datang kembali, ${data.username}!`);
-            localStorage.setItem("user_session", data.username);
-            checkUserSession();
-            closeAuthModal();
-          } else {
-            alert(data.message);
-          }
-        } catch (err) {
-          alert("Terjadi kesalahan koneksi ke server!");
-        } finally {
-          btn.disabled = false;
-          btn.textContent = "Login";
-        }
-      }
+            ['login-form', 'register-form', 'recovery-form', 'verify-form', 'dashboard-view'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
 
-      async function handleSendCode() {
-        const email = document.getElementById("forgot-email").value;
-        const type = document.getElementById("forgot-type").value;
-        const btn = document.getElementById("btn-submit-sendcode");
+            const subtitle = document.getElementById('form-subtitle');
+            const footerNav = document.getElementById('footer-nav');
 
-        if (!email) {
-          alert("Harap masukkan email terdaftar Anda!");
-          return;
-        }
-
-        btn.disabled = true;
-        btn.textContent = "Mengirim Email...";
-
-        try {
-          const res = await fetch("/api/send-code", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email }),
-          });
-          const data = await res.json();
-          alert(data.message);
-
-          if (data.status === "success") {
-            if (type === "username") {
-              document
-                .getElementById("new-password-container")
-                .classList.add("hidden");
-            } else {
-              document
-                .getElementById("new-password-container")
-                .classList.remove("hidden");
+            if (tab === 'login') {
+                document.getElementById('login-form').classList.remove('hidden');
+                subtitle.innerText = 'Masuk ke Akun Anda';
+                footerNav.classList.remove('hidden');
+                document.getElementById('nav-text').innerText = 'Belum punya akun?';
+                document.getElementById('nav-btn').innerText = 'Daftar sekarang';
+            } else if (tab === 'register') {
+                document.getElementById('register-form').classList.remove('hidden');
+                subtitle.innerText = 'Buat Akun Baru';
+                footerNav.classList.remove('hidden');
+                document.getElementById('nav-text').innerText = 'Sudah punya akun?';
+                document.getElementById('nav-btn').innerText = 'Login di sini';
+            } else if (tab === 'recovery') {
+                document.getElementById('recovery-form').classList.remove('hidden');
+                subtitle.innerText = 'Pemulihan Akun';
+                footerNav.classList.remove('hidden');
+                document.getElementById('nav-text').innerText = 'Kembali ke';
+                document.getElementById('nav-btn').innerText = 'Halaman Login';
+            } else if (tab === 'verify') {
+                document.getElementById('verify-form').classList.remove('hidden');
+                subtitle.innerText = 'Verifikasi Kode Email';
+                footerNav.classList.add('hidden');
+            } else if (tab === 'dashboard') {
+                document.getElementById('dashboard-view').classList.remove('hidden');
+                subtitle.innerText = 'Panel Pengguna';
+                footerNav.classList.add('hidden');
             }
-            document.getElementById("forgot-step-1").classList.add("hidden");
-            document.getElementById("forgot-step-2").classList.remove("hidden");
-          }
-        } catch (err) {
-          alert("Gagal mengirim permintaan ke server!");
-        } finally {
-          btn.disabled = false;
-          btn.textContent = "Kirim Kode Verifikasi Email";
-        }
-      }
-
-      async function handleVerifyCode() {
-        const email = document.getElementById("forgot-email").value;
-        const code = document.getElementById("forgot-code").value;
-        const type = document.getElementById("forgot-type").value;
-        const new_password = document.getElementById("new-password").value;
-        const btn = document.getElementById("btn-submit-verify");
-
-        if (!code) {
-          alert("Harap masukkan kode verifikasi huruf!");
-          return;
         }
 
-        btn.disabled = true;
-        btn.textContent = "Verifikasi...";
-
-        try {
-          const res = await fetch("/api/verify-code", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, code, type, new_password }),
-          });
-          const data = await res.json();
-          alert(data.message);
-          if (data.status === "success") {
-            closeAuthModal();
-          }
-        } catch (err) {
-          alert("Gagal melakukan verifikasi!");
-        } finally {
-          btn.disabled = false;
-          btn.textContent = "Verifikasi & Pulihkan Akun";
+        function toggleAuthMode() {
+            if (currentTab === 'login') switchTab('register');
+            else switchTab('login');
         }
-      }
 
-      function checkUserSession() {
-        const username = localStorage.getItem("user_session");
-        const authBtns = document.getElementById("auth-buttons");
-        const userProfile = document.getElementById("user-profile");
-        const displayName = document.getElementById("user-display-name");
+        async function handleLogin(e) {
+            e.preventDefault();
+            hideAlert();
+            const btn = document.getElementById('btn-login');
+            btn.disabled = true;
+            btn.innerText = 'Memproses...';
 
-        if (username) {
-          authBtns.classList.add("hidden");
-          userProfile.classList.remove("hidden");
-          userProfile.classList.add("flex");
-          displayName.textContent = `Halo, ${username}`;
-        } else {
-          authBtns.classList.remove("hidden");
-          userProfile.classList.add("hidden");
-          userProfile.classList.remove("flex");
-        }
-      }
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
 
-      function handleLogout() {
-        localStorage.removeItem("user_session");
-        checkUserSession();
-        alert("Anda telah logout.");
-      }
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
 
-      checkUserSession();
+                const data = await res.json();
 
-      /* -------------------------------------------------------------
-           AUTOSCALE LOGIC UNTUK HP
-        ------------------------------------------------------------- */
-      function autoScaleDesktopView() {
-        const wrapper = document.getElementById("app-wrapper");
-        const screenWidth = window.innerWidth;
-        const desktopWidth = 1024;
-
-        if (screenWidth < desktopWidth) {
-          const scale = screenWidth / desktopWidth;
-          wrapper.style.transform = `scale(${scale})`;
-          wrapper.style.width = `${desktopWidth}px`;
-          const originalHeight = wrapper.offsetHeight;
-          document.body.style.height = `${originalHeight * scale}px`;
-        } else {
-          wrapper.style.transform = "none";
-          wrapper.style.width = "100%";
-          document.body.style.height = "auto";
-        }
-      }
-
-      window.addEventListener("resize", autoScaleDesktopView);
-      window.addEventListener("DOMContentLoaded", autoScaleDesktopView);
-      setTimeout(autoScaleDesktopView, 100);
-
-      /* -------------------------------------------------------------
-           ANIMATED BACKGROUND: AURORA NEBULA & FLOATING PARTICLES
-        ------------------------------------------------------------- */
-      const bgCanvas = document.getElementById("bg-canvas");
-      const bgCtx = bgCanvas.getContext("2d");
-
-      function resizeBgCanvas() {
-        bgCanvas.width = window.innerWidth;
-        bgCanvas.height = window.innerHeight;
-      }
-      window.addEventListener("resize", resizeBgCanvas);
-      resizeBgCanvas();
-
-      const particleCount = 70;
-      const particles = [];
-      const colors = [
-        "rgba(99, 102, 241,",
-        "rgba(236, 72, 153,",
-        "rgba(168, 85, 247,",
-        "rgba(56, 189, 248,",
-      ];
-
-      for (let i = 0; i < particleCount; i++) {
-        particles.push({
-          x: Math.random() * bgCanvas.width,
-          y: Math.random() * bgCanvas.height,
-          radius: Math.random() * 2.5 + 0.5,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          alpha: Math.random() * 0.7 + 0.3,
-          speedX: (Math.random() - 0.5) * 0.8,
-          speedY: (Math.random() - 0.5) * 0.8 - 0.2,
-          pulse: Math.random() * 0.05 + 0.01,
-        });
-      }
-
-      let time = 0;
-      function animateBg() {
-        time += 0.008;
-        const w = bgCanvas.width;
-        const h = bgCanvas.height;
-
-        bgCtx.clearRect(0, 0, w, h);
-
-        bgCtx.fillStyle = "#090d16";
-        bgCtx.fillRect(0, 0, w, h);
-
-        const wave1X = Math.sin(time * 0.7) * w * 0.35 + w * 0.5;
-        const wave1Y = Math.cos(time * 0.5) * h * 0.35 + h * 0.4;
-
-        const wave2X = Math.cos(time * 0.9) * w * 0.4 + w * 0.5;
-        const wave2Y = Math.sin(time * 0.8) * h * 0.4 + h * 0.6;
-
-        const wave3X = Math.sin(time * 1.1) * w * 0.3 + w * 0.3;
-        const wave3Y = Math.cos(time * 1.2) * h * 0.3 + h * 0.7;
-
-        const g1 = bgCtx.createRadialGradient(
-          wave1X,
-          wave1Y,
-          10,
-          wave1X,
-          wave1Y,
-          Math.max(w, h) * 0.55,
-        );
-        g1.addColorStop(0, "rgba(79, 70, 229, 0.35)");
-        g1.addColorStop(1, "rgba(9, 13, 22, 0)");
-
-        const g2 = bgCtx.createRadialGradient(
-          wave2X,
-          wave2Y,
-          10,
-          wave2X,
-          wave2Y,
-          Math.max(w, h) * 0.5,
-        );
-        g2.addColorStop(0, "rgba(236, 72, 153, 0.25)");
-        g2.addColorStop(1, "rgba(9, 13, 22, 0)");
-
-        const g3 = bgCtx.createRadialGradient(
-          wave3X,
-          wave3Y,
-          10,
-          wave3X,
-          wave3Y,
-          Math.max(w, h) * 0.45,
-        );
-        g3.addColorStop(0, "rgba(6, 182, 212, 0.2)");
-        g3.addColorStop(1, "rgba(9, 13, 22, 0)");
-
-        bgCtx.fillStyle = g1;
-        bgCtx.fillRect(0, 0, w, h);
-
-        bgCtx.fillStyle = g2;
-        bgCtx.fillRect(0, 0, w, h);
-
-        bgCtx.fillStyle = g3;
-        bgCtx.fillRect(0, 0, w, h);
-
-        for (let i = 0; i < particles.length; i++) {
-          const p = particles[i];
-
-          p.x += p.speedX;
-          p.y += p.speedY;
-          p.alpha += Math.sin(time * 5) * p.pulse * 0.1;
-
-          if (p.x < 0) p.x = w;
-          if (p.x > w) p.x = 0;
-          if (p.y < 0) p.y = h;
-          if (p.y > h) p.y = 0;
-
-          bgCtx.beginPath();
-          bgCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          bgCtx.fillStyle = p.color + Math.max(0.1, Math.min(1, p.alpha)) + ")";
-          bgCtx.shadowBlur = 10;
-          bgCtx.shadowColor = p.color + "1)";
-          bgCtx.fill();
-          bgCtx.shadowBlur = 0;
-
-          for (let j = i + 1; j < particles.length; j++) {
-            const p2 = particles[j];
-            const dx = p.x - p2.x;
-            const dy = p.y - p2.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist < 110) {
-              bgCtx.beginPath();
-              bgCtx.moveTo(p.x, p.y);
-              bgCtx.lineTo(p2.x, p2.y);
-              bgCtx.strokeStyle = `rgba(129, 140, 248, ${0.2 * (1 - dist / 110)})`;
-              bgCtx.lineWidth = 0.6;
-              bgCtx.stroke();
+                if (res.ok && data.status === 'success') {
+                    document.getElementById('user-welcome-text').innerText = `Login sebagai: @${data.user.username} (${data.user.email})`;
+                    switchTab('dashboard');
+                } else {
+                    showAlert(data.message || 'Login gagal!');
+                }
+            } catch (err) {
+                showAlert('Gagal terhubung ke server. Periksa koneksi internet Anda.');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Masuk';
             }
-          }
         }
 
-        requestAnimationFrame(animateBg);
-      }
-      animateBg();
+        async function handleRegister(e) {
+            e.preventDefault();
+            hideAlert();
+            const btn = document.getElementById('btn-register');
+            btn.disabled = true;
+            btn.innerText = 'Memproses...';
 
-      /* -------------------------------------------------------------
-           PASFOTO EDITOR CORE LOGIC
-        ------------------------------------------------------------- */
-      const imageUpload = document.getElementById("image-upload");
-      const uploadStatusLabel = document.getElementById("upload-status-label");
-      const previewCanvas = document.getElementById("preview-canvas");
-      const ctx = previewCanvas.getContext("2d");
-      const sizeInfoLabel = document.getElementById("size-info-label");
+            const email = document.getElementById('reg-email').value;
+            const username = document.getElementById('reg-username').value;
+            const password = document.getElementById('reg-password').value;
 
-      const zoomRange = document.getElementById("zoom-range");
-      const zoomVal = document.getElementById("zoom-val");
-      const rotateRange = document.getElementById("rotate-range");
-      const rotateVal = document.getElementById("rotate-val");
-      const btnReset = document.getElementById("btn-reset");
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, username, password })
+                });
 
-      const presetBtns = document.querySelectorAll(".preset-btn");
-      const customSizePanel = document.getElementById("custom-size-panel");
-      const customWidthInput = document.getElementById("custom-width");
-      const customHeightInput = document.getElementById("custom-height");
+                const data = await res.json();
 
-      const btnDownloadSingle = document.getElementById("btn-download-single");
-      const btnDownloadA4 = document.getElementById("btn-download-a4");
-
-      const PRESETS = {
-        "2x3": { w: 236, h: 354, label: "2x3 cm (236 x 354 px)" },
-        "3x4": { w: 354, h: 472, label: "3x4 cm (354 x 472 px)" },
-        "4x6": { w: 472, h: 709, label: "4x6 cm (472 x 709 px)" },
-      };
-
-      let currentWidth = 0;
-      let currentHeight = 0;
-      let selectedPresetKey = null;
-
-      let uploadedImage = null;
-      let scale = 1.0;
-      let rotationDegrees = 0;
-      let offsetX = 0;
-      let offsetY = 0;
-
-      let isDragging = false;
-      let startMouseX = 0;
-      let startMouseY = 0;
-
-      function checkActionButtonsState() {
-        const hasImage = uploadedImage !== null;
-        const hasValidSize = currentWidth > 0 && currentHeight > 0;
-        const isReady = hasImage && hasValidSize;
-
-        btnDownloadSingle.disabled = !isReady;
-        btnDownloadA4.disabled = !isReady;
-      }
-
-      function drawPlaceholder() {
-        const renderW = 250;
-        const renderH = 350;
-
-        previewCanvas.width = renderW;
-        previewCanvas.height = renderH;
-
-        ctx.fillStyle = "#1e293b";
-        ctx.fillRect(0, 0, renderW, renderH);
-
-        ctx.fillStyle = "#64748b";
-        ctx.font = '600 13px "Plus Jakarta Sans", sans-serif';
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-
-        ctx.fillText("Unggah Foto", renderW / 2, renderH / 2 - 10);
-        ctx.font = '400 11px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText("untuk memulai", renderW / 2, renderH / 2 + 10);
-      }
-      drawPlaceholder();
-      checkActionButtonsState();
-
-      function renderCanvas() {
-        if (!uploadedImage) {
-          drawPlaceholder();
-          checkActionButtonsState();
-          return;
-        }
-
-        const targetW = currentWidth > 0 ? currentWidth : 250;
-        const targetH =
-          currentHeight > 0
-            ? currentHeight
-            : Math.round(250 * (uploadedImage.height / uploadedImage.width));
-
-        previewCanvas.width = targetW;
-        previewCanvas.height = targetH;
-
-        ctx.clearRect(0, 0, targetW, targetH);
-
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, targetW, targetH);
-
-        ctx.save();
-
-        const centerX = targetW / 2 + offsetX;
-        const centerY = targetH / 2 + offsetY;
-        ctx.translate(centerX, centerY);
-
-        ctx.rotate((rotationDegrees * Math.PI) / 180);
-
-        const imgWidth = uploadedImage.width * scale;
-        const imgHeight = uploadedImage.height * scale;
-
-        ctx.drawImage(
-          uploadedImage,
-          -imgWidth / 2,
-          -imgHeight / 2,
-          imgWidth,
-          imgHeight,
-        );
-
-        ctx.restore();
-        checkActionButtonsState();
-      }
-
-      function autoFitImage() {
-        if (!uploadedImage) return;
-
-        const targetW = currentWidth > 0 ? currentWidth : 250;
-        const targetH =
-          currentHeight > 0
-            ? currentHeight
-            : Math.round(250 * (uploadedImage.height / uploadedImage.width));
-
-        const scaleW = targetW / uploadedImage.width;
-        const scaleH = targetH / uploadedImage.height;
-        scale = Math.max(scaleW, scaleH);
-
-        offsetX = 0;
-        offsetY = 0;
-        rotationDegrees = 0;
-
-        zoomRange.value = Math.round(scale * 100);
-        zoomVal.textContent = zoomRange.value + "%";
-        rotateRange.value = 0;
-        rotateVal.textContent = "0°";
-
-        renderCanvas();
-      }
-
-      imageUpload.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        uploadStatusLabel.textContent = file.name;
-
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const img = new Image();
-          img.onload = () => {
-            uploadedImage = img;
-            autoFitImage();
-            checkActionButtonsState();
-          };
-          img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-      });
-
-      presetBtns.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          presetBtns.forEach((b) => b.classList.remove("active"));
-          btn.classList.add("active");
-
-          const key = btn.getAttribute("data-preset");
-          selectedPresetKey = key;
-
-          if (key === "custom") {
-            customSizePanel.classList.remove("hidden");
-            customSizePanel.classList.add("flex");
-            applyCustomSize();
-          } else {
-            customSizePanel.classList.add("hidden");
-            customSizePanel.classList.remove("flex");
-
-            if (PRESETS[key]) {
-              currentWidth = PRESETS[key].w;
-              currentHeight = PRESETS[key].h;
-              sizeInfoLabel.textContent = `Ukuran Saat Ini: ${PRESETS[key].label}`;
-
-              if (uploadedImage) {
-                autoFitImage();
-              } else {
-                drawPlaceholder();
-              }
+                if (res.ok && data.status === 'success') {
+                    showAlert('Registrasi berhasil! Silakan login.', false);
+                    setTimeout(() => switchTab('login'), 1500);
+                } else {
+                    showAlert(data.message || 'Registrasi gagal!');
+                }
+            } catch (err) {
+                showAlert('Gagal terhubung ke server.');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Daftar Akun';
             }
-          }
-          checkActionButtonsState();
-          autoScaleDesktopView();
-        });
-      });
-
-      function applyCustomSize() {
-        if (selectedPresetKey !== "custom") return;
-
-        const w = parseInt(customWidthInput.value) || 0;
-        const h = parseInt(customHeightInput.value) || 0;
-        currentWidth = w;
-        currentHeight = h;
-
-        if (w > 0 && h > 0) {
-          sizeInfoLabel.textContent = `Ukuran Custom: ${w} x ${h} px`;
-        } else {
-          sizeInfoLabel.textContent = `Ukuran Custom Belum Ditentukan (0 x 0 px)`;
         }
 
-        if (uploadedImage) {
-          renderCanvas();
-        } else {
-          drawPlaceholder();
-        }
-        checkActionButtonsState();
-      }
+        async function handleSendCode(e) {
+            e.preventDefault();
+            hideAlert();
+            const btn = document.getElementById('btn-send-code');
+            btn.disabled = true;
+            btn.innerText = 'Mengirim...';
 
-      customWidthInput.addEventListener("input", applyCustomSize);
-      customHeightInput.addEventListener("input", applyCustomSize);
+            const email = document.getElementById('rec-email').value;
 
-      zoomRange.addEventListener("input", (e) => {
-        const val = parseInt(e.target.value);
-        scale = val / 100;
-        zoomVal.textContent = val + "%";
-        renderCanvas();
-      });
+            try {
+                const res = await fetch('/api/send-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
 
-      rotateRange.addEventListener("input", (e) => {
-        const val = parseInt(e.target.value);
-        rotationDegrees = val;
-        rotateVal.textContent = val + "°";
-        renderCanvas();
-      });
+                const data = await res.json();
 
-      btnReset.addEventListener("click", () => {
-        if (uploadedImage) {
-          autoFitImage();
-        }
-      });
-
-      function getScaledCoords(e) {
-        const screenWidth = window.innerWidth;
-        const scaleFactor = screenWidth < 1024 ? screenWidth / 1024 : 1;
-        return {
-          x: e.clientX / scaleFactor,
-          y: e.clientY / scaleFactor,
-        };
-      }
-
-      previewCanvas.addEventListener("mousedown", (e) => {
-        if (!uploadedImage) return;
-        isDragging = true;
-        const coords = getScaledCoords(e);
-        startMouseX = coords.x - offsetX;
-        startMouseY = coords.y - offsetY;
-      });
-
-      window.addEventListener("mousemove", (e) => {
-        if (!isDragging) return;
-        const coords = getScaledCoords(e);
-        offsetX = coords.x - startMouseX;
-        offsetY = coords.y - startMouseY;
-        renderCanvas();
-      });
-
-      window.addEventListener("mouseup", () => {
-        isDragging = false;
-      });
-
-      previewCanvas.addEventListener("touchstart", (e) => {
-        if (!uploadedImage || e.touches.length !== 1) return;
-        isDragging = true;
-        const touch = e.touches[0];
-        const coords = getScaledCoords(touch);
-        startMouseX = coords.x - offsetX;
-        startMouseY = coords.y - offsetY;
-      });
-
-      window.addEventListener("touchmove", (e) => {
-        if (!isDragging || e.touches.length !== 1) return;
-        const touch = e.touches[0];
-        const coords = getScaledCoords(touch);
-        offsetX = coords.x - startMouseX;
-        offsetY = coords.y - startMouseY;
-        renderCanvas();
-      });
-
-      window.addEventListener("touchend", () => {
-        isDragging = false;
-      });
-
-      btnDownloadSingle.addEventListener("click", () => {
-        if (!uploadedImage || currentWidth <= 0 || currentHeight <= 0) return;
-
-        const link = document.createElement("a");
-        link.download = `pasfoto_${currentWidth}x${currentHeight}.jpg`;
-        link.href = previewCanvas.toDataURL("image/jpeg", 0.95);
-        link.click();
-      });
-
-      btnDownloadA4.addEventListener("click", () => {
-        if (!uploadedImage || currentWidth <= 0 || currentHeight <= 0) return;
-
-        const a4Canvas = document.getElementById("a4-canvas");
-        const a4Ctx = a4Canvas.getContext("2d");
-
-        const a4Width = 2480;
-        const a4Height = 3508;
-
-        a4Canvas.width = a4Width;
-        a4Canvas.height = a4Height;
-
-        a4Ctx.fillStyle = "#ffffff";
-        a4Ctx.fillRect(0, 0, a4Width, a4Height);
-
-        const padding = 100;
-        const gap = 40;
-        const itemW = currentWidth * 2;
-        const itemH = currentHeight * 2;
-
-        const cols = Math.floor((a4Width - padding * 2 + gap) / (itemW + gap));
-        const rows = Math.floor((a4Height - padding * 2 + gap) / (itemH + gap));
-
-        for (let r = 0; r < rows; r++) {
-          for (let c = 0; c < cols; c++) {
-            const x = padding + c * (itemW + gap);
-            const y = padding + r * (itemH + gap);
-
-            a4Ctx.drawImage(previewCanvas, x, y, itemW, itemH);
-
-            a4Ctx.strokeStyle = "#cbd5e1";
-            a4Ctx.lineWidth = 2;
-            a4Ctx.strokeRect(x, y, itemW, itemH);
-          }
+                if (res.ok && data.status === 'success') {
+                    showAlert('Kode verifikasi telah dikirim ke email Anda!', false);
+                    setTimeout(() => switchTab('verify'), 1500);
+                } else {
+                    showAlert(data.message || 'Gagal mengirim kode.');
+                }
+            } catch (err) {
+                showAlert('Terjadi kesalahan jaringan.');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Kirim Kode Verifikasi';
+            }
         }
 
-        const link = document.createElement("a");
-        link.download = `lembar_cetak_A4_pasfoto.jpg`;
-        link.href = a4Canvas.toDataURL("image/jpeg", 0.95);
-        link.click();
-      });
+        async function handleVerifyCode(e) {
+            e.preventDefault();
+            hideAlert();
+            const btn = document.getElementById('btn-verify');
+            btn.disabled = true;
+            btn.innerText = 'Memverifikasi...';
+
+            const email = document.getElementById('rec-email').value;
+            const code = document.getElementById('ver-code').value;
+
+            try {
+                const res = await fetch('/api/verify-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, code })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.status === 'success') {
+                    showAlert(`Username: @${data.user.username} | Password sementara dikirim/diubah!`, false);
+                } else {
+                    showAlert(data.message || 'Kode verifikasi tidak valid atau telah kadaluarsa.');
+                }
+            } catch (err) {
+                showAlert('Terjadi kesalahan jaringan.');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Verifikasi Kode';
+            }
+        }
+
+        function handleLogout() {
+            switchTab('login');
+            showAlert('Anda telah keluar dari akun.', false);
+        }
     </script>
-  </body>
+</body>
 </html>
