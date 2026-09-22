@@ -1,0 +1,9 @@
+{
+  "name": "pasfoto-studio",
+  "version": "1.0.0",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "pg": "^8.11.3",
+    "resend": "^3.2.0"
+  }
+}
