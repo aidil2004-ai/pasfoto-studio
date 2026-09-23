@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
   try {
     await client.connect();
 
-    // 1. Cari user berdasarkan email & kode verifikasi
+    // 1. Cari user berdasarkan email
     const userResult = await client.query('SELECT * FROM users WHERE email = $1', [email]);
     if (userResult.rows.length === 0) {
       return res.status(400).json({ status: 'error', message: 'Email tidak ditemukan!' });
@@ -37,11 +37,13 @@ module.exports = async (req, res) => {
 
     // 3. Proses berdasarkan jenis pemulihan
     if (type === 'username') {
-      // Hapus kode setelah 1x pakai (Set reset_code dan code_expires ke NULL)
+      // Hapus kode verifikasi setelah 1x pakai (Set reset_code dan code_expires ke NULL)
       await client.query('UPDATE users SET reset_code = NULL, code_expires = NULL WHERE email = $1', [email]);
 
+      // KIRIM RESPOSE SERTAKAN USERNAME USER
       return res.status(200).json({
         status: 'success',
+        username: user.username,
         message: `Pemulihan berhasil! Username Anda adalah: ${user.username}`
       });
     } else if (type === 'password') {
