@@ -166,6 +166,10 @@
 
     <!-- Content Wrapper -->
     <div id="app-wrapper" class="relative z-10 flex flex-col min-h-screen desktop-mini-container">
+      
+      <!-- OVERLAY PENJAGA / LOCK SCREEN (Mencegah Klik Sebelum Login) -->
+      <div id="app-lock-overlay" onclick="handleLockedClick()" class="fixed inset-0 z-20 bg-slate-950/20 backdrop-blur-[2px] cursor-pointer transition-all duration-300"></div>
+
       <!-- Header / Navbar -->
       <header class="w-full border-b border-slate-800/80 glass-panel sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -520,7 +524,7 @@
     <div id="result-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg hidden transition-all duration-300">
       <div class="glass-panel p-8 rounded-3xl max-w-sm w-full mx-4 relative border border-indigo-500/40 shadow-2xl text-center flex flex-col items-center gap-4">
         
-        <!-- Tombol Close X (Satu-satunya cara untuk keluar) -->
+        <!-- Tombol Close X -->
         <button onclick="closeResultModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition p-1 rounded-lg bg-slate-800/60 hover:bg-slate-700">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
@@ -604,6 +608,14 @@
           toast.classList.remove("show");
           setTimeout(() => toast.remove(), 400);
         }, 3500);
+      }
+
+      /* -------------------------------------------------------------
+            HANDLER KLIK SAAT LAYAR TERKUNCI (BELUM LOGIN)
+        ------------------------------------------------------------- */
+      function handleLockedClick() {
+        showToast("info", "Akses Terbatas", "Anda wajib mendaftar / login akun terlebih dahulu untuk menggunakan fitur website!");
+        openAuthModal('register');
       }
 
       /* -------------------------------------------------------------
@@ -830,16 +842,23 @@
         const authBtns = document.getElementById('auth-buttons');
         const userProfile = document.getElementById('user-profile');
         const displayName = document.getElementById('user-display-name');
+        const lockOverlay = document.getElementById('app-lock-overlay');
 
         if (username && username !== "undefined") {
           authBtns.classList.add('hidden');
           userProfile.classList.remove('hidden');
           userProfile.classList.add('flex');
           displayName.textContent = `Halo, ${username}`;
+          
+          // Buka kuncian aplikasi jika sudah login
+          if (lockOverlay) lockOverlay.classList.add('hidden');
         } else {
           authBtns.classList.remove('hidden');
           userProfile.classList.add('hidden');
           userProfile.classList.remove('flex');
+          
+          // Kunci aplikasi jika belum login
+          if (lockOverlay) lockOverlay.classList.remove('hidden');
         }
       }
 
