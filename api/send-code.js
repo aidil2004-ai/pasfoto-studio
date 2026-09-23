@@ -38,9 +38,11 @@ module.exports = async (req, res) => {
       [code, expiresAt, email]
     );
 
-    // 4. Konfigurasi Transporter Nodemailer (Gmail)
+    // 4. Transporter SMTP Gmail via Port 465 (SSL)
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.GMAIL_USER,
         pass: process.env.GMAIL_PASS
