@@ -79,6 +79,43 @@
         box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
       }
 
+      /* ANIMATED TOAST NOTIFICATION */
+      #toast-container {
+        position: fixed;
+        top: 1.5rem;
+        right: 1.5rem;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        pointer-events: none;
+      }
+
+      .toast-card {
+        pointer-events: auto;
+        min-width: 300px;
+        max-width: 420px;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        border-radius: 1rem;
+        padding: 1rem 1.25rem;
+        display: flex;
+        items-center;
+        gap: 0.75rem;
+        color: #fff;
+        transform: translateX(120%);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .toast-card.show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
       /* Layout Mini Desktop untuk Layar HP */
       @media (max-width: 1023px) {
         .desktop-mini-container {
@@ -121,6 +158,9 @@
     </style>
   </head>
   <body class="min-h-screen relative flex flex-col selection:bg-indigo-500 selection:text-white overflow-x-hidden">
+    <!-- Container untuk Toast Animated Pop-up -->
+    <div id="toast-container"></div>
+
     <!-- Background Animated Fluid & Particle Canvas -->
     <canvas id="bg-canvas"></canvas>
 
@@ -367,7 +407,7 @@
     <canvas id="a4-canvas" class="hidden"></canvas>
 
     <!-- MODAL FITUR AUTENTIKASI -->
-    <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md hidden">
+    <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md hidden transition-all duration-300">
       <div class="glass-panel p-8 rounded-3xl max-w-md w-full mx-4 relative border border-slate-700/80 shadow-2xl">
         <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
           <i data-lucide="x" class="w-6 h-6"></i>
@@ -482,6 +522,57 @@
       lucide.createIcons();
 
       /* -------------------------------------------------------------
+            ANIMATED SMOOTH CUSTOM TOAST NOTIFICATION SYSTEM
+        ------------------------------------------------------------- */
+      function showToast(type, title, message) {
+        const container = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        toast.className = "toast-card";
+
+        let iconName = "info";
+        let iconColor = "text-indigo-400";
+        let borderColor = "border-indigo-500/30";
+
+        if (type === "success") {
+          iconName = "check-circle-2";
+          iconColor = "text-emerald-400";
+          borderColor = "border-emerald-500/30";
+        } else if (type === "error") {
+          iconName = "alert-triangle";
+          iconColor = "text-rose-400";
+          borderColor = "border-rose-500/30";
+        } else if (type === "info") {
+          iconName = "info";
+          iconColor = "text-sky-400";
+          borderColor = "border-sky-500/30";
+        }
+
+        toast.classList.add(borderColor);
+
+        toast.innerHTML = `
+          <div class="p-2 rounded-xl bg-slate-800/80 ${iconColor} flex-shrink-0">
+            <i data-lucide="${iconName}" class="w-5 h-5"></i>
+          </div>
+          <div class="flex-1">
+            <h4 class="text-xs font-bold text-white">${title}</h4>
+            <p class="text-[11px] text-slate-300 leading-snug mt-0.5">${message}</p>
+          </div>
+        `;
+
+        container.appendChild(toast);
+        lucide.createIcons();
+
+        // Trigger Smooth Entrance Animation
+        setTimeout(() => toast.classList.add("show"), 10);
+
+        // Auto Dismiss
+        setTimeout(() => {
+          toast.classList.remove("show");
+          setTimeout(() => toast.remove(), 400);
+        }, 3500);
+      }
+
+      /* -------------------------------------------------------------
             MODAL & INTEGRASI API SERVERLESS VERCEL
         ------------------------------------------------------------- */
       function openAuthModal(mode) {
@@ -517,7 +608,7 @@
         const btn = document.getElementById("btn-submit-register");
 
         if (!email || !username || !password) {
-          alert("Harap isi semua kolom pendaftaran!");
+          showToast("error", "Pendaftaran Gagal", "Harap isi seluruh kolom pendaftaran!");
           return;
         }
 
@@ -531,12 +622,18 @@
             body: JSON.stringify({ email, username, password })
           });
           const data = await res.json();
-          alert(data.message);
+          
           if (data.status === 'success') {
+            showToast("success", "Pendaftaran Berhasil", data.message);
+            document.getElementById("reg-email").value = "";
+            document.getElementById("reg-username").value = "";
+            document.getElementById("reg-password").value = "";
             switchAuthForm('login');
+          } else {
+            showToast("error", "Gagal Mendaftar", data.message);
           }
         } catch (err) {
-          alert("Terjadi kesalahan koneksi ke server!");
+          showToast("error", "Koneksi Bermasalah", "Terjadi kesalahan koneksi ke server!");
         } finally {
           btn.disabled = false;
           btn.textContent = "Daftar Akun";
@@ -549,7 +646,7 @@
         const btn = document.getElementById("btn-submit-login");
 
         if (!usernameInput || !password) {
-          alert("Harap isi username dan password!");
+          showToast("error", "Login Gagal", "Harap isi username dan password!");
           return;
         }
 
@@ -563,18 +660,22 @@
             body: JSON.stringify({ username: usernameInput, password })
           });
           const data = await res.json();
+
           if (data.status === 'success') {
-            // Ambil username dari respon server
             const finalUsername = data.username || (data.user && data.user.username) || usernameInput;
-            alert(`Selamat datang kembali, ${finalUsername}!`);
+            showToast("success", "Login Berhasil", `Selamat datang kembali, ${finalUsername}!`);
             localStorage.setItem('user_session', finalUsername);
+            
+            document.getElementById("login-username").value = "";
+            document.getElementById("login-password").value = "";
+
             checkUserSession();
             closeAuthModal();
           } else {
-            alert(data.message);
+            showToast("error", "Login Gagal", data.message);
           }
         } catch (err) {
-          alert("Terjadi kesalahan koneksi ke server!");
+          showToast("error", "Koneksi Bermasalah", "Terjadi kesalahan koneksi ke server!");
         } finally {
           btn.disabled = false;
           btn.textContent = "Login";
@@ -587,7 +688,7 @@
         const btn = document.getElementById("btn-submit-sendcode");
 
         if (!email) {
-          alert("Harap masukkan email terdaftar Anda!");
+          showToast("error", "Email Diperlukan", "Harap masukkan email terdaftar Anda!");
           return;
         }
 
@@ -601,9 +702,10 @@
             body: JSON.stringify({ email })
           });
           const data = await res.json();
-          alert(data.message);
 
           if (data.status === 'success') {
+            showToast("success", "Email Terkirim", data.message);
+
             if (type === "username") {
               document.getElementById("new-password-container").classList.add("hidden");
             } else {
@@ -611,9 +713,11 @@
             }
             document.getElementById("forgot-step-1").classList.add("hidden");
             document.getElementById("forgot-step-2").classList.remove("hidden");
+          } else {
+            showToast("error", "Gagal Kirim Kode", data.message);
           }
         } catch (err) {
-          alert("Gagal mengirim permintaan ke server!");
+          showToast("error", "Gagal", "Gagal mengirim permintaan ke server!");
         } finally {
           btn.disabled = false;
           btn.textContent = "Kirim Kode Verifikasi Email";
@@ -628,7 +732,7 @@
         const btn = document.getElementById("btn-submit-verify");
 
         if (!code) {
-          alert("Harap masukkan kode verifikasi huruf!");
+          showToast("error", "Kode Kosong", "Harap masukkan kode verifikasi huruf!");
           return;
         }
 
@@ -642,12 +746,22 @@
             body: JSON.stringify({ email, code, type, new_password })
           });
           const data = await res.json();
-          alert(data.message);
+
           if (data.status === 'success') {
+            showToast("success", "Pemulihan Berhasil", data.message);
+
+            // Bersihkan form & hapus isi input secara menyeluruh
+            document.getElementById("forgot-email").value = "";
+            document.getElementById("forgot-code").value = "";
+            document.getElementById("new-password").value = "";
+
             closeAuthModal();
+            switchAuthForm('login');
+          } else {
+            showToast("error", "Verifikasi Gagal", data.message);
           }
         } catch (err) {
-          alert("Gagal melakukan verifikasi!");
+          showToast("error", "Gagal", "Gagal melakukan verifikasi!");
         } finally {
           btn.disabled = false;
           btn.textContent = "Verifikasi & Pulihkan Akun";
@@ -675,7 +789,7 @@
       function handleLogout() {
         localStorage.removeItem('user_session');
         checkUserSession();
-        alert("Anda telah logout.");
+        showToast("info", "Logout", "Anda telah keluar dari akun.");
       }
 
       checkUserSession();
@@ -973,6 +1087,7 @@
             uploadedImage = img;
             autoFitImage();
             checkActionButtonsState();
+            showToast("info", "Foto Diunggah", file.name);
           };
           img.src = event.target.result;
         };
@@ -1054,6 +1169,7 @@
       btnReset.addEventListener("click", () => {
         if (uploadedImage) {
           autoFitImage();
+          showToast("info", "Reset", "Posisi foto berhasil di-reset.");
         }
       });
 
@@ -1115,6 +1231,7 @@
         link.download = `pasfoto_${currentWidth}x${currentHeight}.jpg`;
         link.href = previewCanvas.toDataURL("image/jpeg", 0.95);
         link.click();
+        showToast("success", "Unduhan Dimulai", "Foto berhasil diunduh.");
       });
 
       btnDownloadA4.addEventListener("click", () => {
@@ -1157,6 +1274,7 @@
         link.download = `lembar_cetak_A4_pasfoto.jpg`;
         link.href = a4Canvas.toDataURL("image/jpeg", 0.95);
         link.click();
+        showToast("success", "Lembar Cetak A4", "Lembar A4 siap dicetak.");
       });
     </script>
   </body>
