@@ -167,9 +167,6 @@
     <!-- Content Wrapper -->
     <div id="app-wrapper" class="relative z-10 flex flex-col min-h-screen desktop-mini-container">
       
-      <!-- OVERLAY PENJAGA / LOCK SCREEN (Mencegah Klik Sebelum Login) -->
-      <div id="app-lock-overlay" onclick="handleLockedClick()" class="fixed inset-0 z-20 bg-slate-950/20 backdrop-blur-[2px] cursor-pointer transition-all duration-300"></div>
-
       <!-- Header / Navbar -->
       <header class="w-full border-b border-slate-800/80 glass-panel sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -611,14 +608,6 @@
       }
 
       /* -------------------------------------------------------------
-            HANDLER KLIK SAAT LAYAR TERKUNCI (BELUM LOGIN)
-        ------------------------------------------------------------- */
-      function handleLockedClick() {
-        showToast("info", "Akses Terbatas", "Anda wajib mendaftar / login akun terlebih dahulu untuk menggunakan fitur website!");
-        openAuthModal('register');
-      }
-
-      /* -------------------------------------------------------------
             RESULT MODAL LOCK FUNCTIONS FOR USERNAME RECOVERY
         ------------------------------------------------------------- */
       function openResultModal(username) {
@@ -842,23 +831,16 @@
         const authBtns = document.getElementById('auth-buttons');
         const userProfile = document.getElementById('user-profile');
         const displayName = document.getElementById('user-display-name');
-        const lockOverlay = document.getElementById('app-lock-overlay');
 
         if (username && username !== "undefined") {
           authBtns.classList.add('hidden');
           userProfile.classList.remove('hidden');
           userProfile.classList.add('flex');
           displayName.textContent = `Halo, ${username}`;
-          
-          // Buka kuncian aplikasi jika sudah login
-          if (lockOverlay) lockOverlay.classList.add('hidden');
         } else {
           authBtns.classList.remove('hidden');
           userProfile.classList.add('hidden');
           userProfile.classList.remove('flex');
-          
-          // Kunci aplikasi jika belum login
-          if (lockOverlay) lockOverlay.classList.remove('hidden');
         }
       }
 
@@ -1300,8 +1282,19 @@
         isDragging = false;
       });
 
+      /* -------------------------------------------------------------
+            FUNGSI UNDUH & CETAK DENGAN CEK SESSION LOGIN
+        ------------------------------------------------------------- */
       btnDownloadSingle.addEventListener("click", () => {
         if (!uploadedImage || currentWidth <= 0 || currentHeight <= 0) return;
+
+        // Cek apakah user sudah login
+        const userSession = localStorage.getItem('user_session');
+        if (!userSession || userSession === "undefined") {
+          showToast("info", "Akses Terbatas", "Anda harus mendaftar atau login terlebih dahulu untuk mengunduh hasil foto!");
+          openAuthModal('register');
+          return;
+        }
 
         const link = document.createElement("a");
         link.download = `pasfoto_${currentWidth}x${currentHeight}.jpg`;
@@ -1312,6 +1305,14 @@
 
       btnDownloadA4.addEventListener("click", () => {
         if (!uploadedImage || currentWidth <= 0 || currentHeight <= 0) return;
+
+        // Cek apakah user sudah login
+        const userSession = localStorage.getItem('user_session');
+        if (!userSession || userSession === "undefined") {
+          showToast("info", "Akses Terbatas", "Anda harus mendaftar atau login terlebih dahulu untuk mengunduh lembar cetak A4!");
+          openAuthModal('register');
+          return;
+        }
 
         const a4Canvas = document.getElementById("a4-canvas");
         const a4Ctx = a4Canvas.getContext("2d");
