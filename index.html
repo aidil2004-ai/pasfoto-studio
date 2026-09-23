@@ -103,7 +103,7 @@
         border-radius: 1rem;
         padding: 1rem 1.25rem;
         display: flex;
-        items-center;
+        align-items: center;
         gap: 0.75rem;
         color: #fff;
         transform: translateX(120%);
@@ -516,6 +516,40 @@
       </div>
     </div>
 
+    <!-- MODAL POPUP HASIL PEMULIHAN USERNAME (STRICT / MODAL LOCK) -->
+    <div id="result-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg hidden transition-all duration-300">
+      <div class="glass-panel p-8 rounded-3xl max-w-sm w-full mx-4 relative border border-indigo-500/40 shadow-2xl text-center flex flex-col items-center gap-4">
+        
+        <!-- Tombol Close X (Satu-satunya cara untuk keluar) -->
+        <button onclick="closeResultModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition p-1 rounded-lg bg-slate-800/60 hover:bg-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+
+        <div class="p-4 bg-indigo-500/20 text-indigo-400 rounded-full border border-indigo-500/30">
+          <i data-lucide="user-check" class="w-10 h-10"></i>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-white">Username Ditemukan!</h3>
+          <p class="text-xs text-slate-300 mt-1">Berikut adalah username terdaftar milik akun Anda:</p>
+        </div>
+
+        <!-- Tampilan Username Besar -->
+        <div class="w-full bg-slate-900/90 border border-indigo-500/50 rounded-2xl p-4 my-1 shadow-inner">
+          <span id="result-username-text" class="text-xl font-extrabold text-indigo-400 tracking-wider font-mono select-all">
+            -
+          </span>
+        </div>
+
+        <p class="text-[11px] text-slate-400">Username telah disalin otomatis ke form Login.</p>
+
+        <button onclick="closeResultModal()" class="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 font-bold rounded-xl text-xs text-white shadow-lg transition">
+          Tutup & Lanjut Login
+        </button>
+
+      </div>
+    </div>
+
     <!-- JavaScript Logic -->
     <script>
       // Initialize Lucide Icons
@@ -570,6 +604,21 @@
           toast.classList.remove("show");
           setTimeout(() => toast.remove(), 400);
         }, 3500);
+      }
+
+      /* -------------------------------------------------------------
+            RESULT MODAL LOCK FUNCTIONS FOR USERNAME RECOVERY
+        ------------------------------------------------------------- */
+      function openResultModal(username) {
+        document.getElementById("result-username-text").textContent = username;
+        document.getElementById("result-modal").classList.remove("hidden");
+        lucide.createIcons();
+      }
+
+      function closeResultModal() {
+        document.getElementById("result-modal").classList.add("hidden");
+        closeAuthModal();
+        switchAuthForm('login');
       }
 
       /* -------------------------------------------------------------
@@ -748,15 +797,23 @@
           const data = await res.json();
 
           if (data.status === 'success') {
-            showToast("success", "Pemulihan Berhasil", data.message);
-
-            // Bersihkan form & hapus isi input secara menyeluruh
+            // Bersihkan form pemulihan
             document.getElementById("forgot-email").value = "";
             document.getElementById("forgot-code").value = "";
             document.getElementById("new-password").value = "";
 
-            closeAuthModal();
-            switchAuthForm('login');
+            if (type === 'username' && data.username) {
+              // Otomatis isikan username ke kolom login
+              document.getElementById("login-username").value = data.username;
+              
+              // Tampilkan Pop-Up Tengah Lock Modal khusus untuk Lupa Username
+              openResultModal(data.username);
+            } else {
+              // Untuk Lupa Password, cukup tampilkan toast & pindahkan ke form login
+              showToast("success", "Pemulihan Berhasil", data.message);
+              closeAuthModal();
+              switchAuthForm('login');
+            }
           } else {
             showToast("error", "Verifikasi Gagal", data.message);
           }
