@@ -7,8 +7,17 @@
     <!-- JUDUL UTAMA WEBSITE (OPTIMASI SEO) -->
     <title>ubah ukuran foto 2x3 3x4 dan 4x6 - PasFoto Studio</title>
 
-    <!-- FAVICON KUSTOM -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%236366f1'/><stop offset='100%' stop-color='%23a855f7'/></linearGradient></defs><rect width='100' height='100' rx='28' fill='url(%23g)'/><path d='M30 35h40a5 5 0 0 1 5 5v30a5 5 0 0 1-5 5H30a5 5 0 0 1-5-5V40a5 5 0 0 1 5-5z' fill='none' stroke='white' stroke-width='6'/><circle cx='50' cy='52' r='11' fill='none' stroke='white' stroke-width='6'/><path d='M40 35l4-8h12l4 8' fill='none' stroke='white' stroke-width='5' stroke-linejoin='round'/></svg>" />
+    <!-- METADATA NAMA SITUS UNTUK GOOGLE (MENGGANTI TULISAN VERCEL) -->
+    <meta property="og:site_name" content="PasFoto Studio" />
+    <meta property="og:title" content="ubah ukuran foto 2x3 3x4 dan 4x6 - PasFoto Studio" />
+    <meta property="og:description" content="Layanan gratis ubah ukuran foto 2x3 3x4 dan 4x6 secara instan dan mudah. Edit posisi pasfoto dan cetak langsung di lembar kertas A4 secara online." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://pasfoto-studio-rosy.vercel.app/" />
+
+    <!-- INTEGRASI FILE FAVICON 48x48 PNG UNTUK GOOGLE & BROWSER -->
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon.png" />
+    <link rel="shortcut icon" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
 
     <!-- META DESKRIPSI UNTUK PENCARIAN GOOGLE -->
     <meta name="description" content="Layanan gratis ubah ukuran foto 2x3 3x4 dan 4x6 secara instan dan mudah. Edit posisi pasfoto dan cetak langsung di lembar kertas A4 secara online." />
@@ -17,6 +26,17 @@
     
     <!-- CANONICAL URL -->
     <link rel="canonical" href="https://pasfoto-studio-rosy.vercel.app/" />
+
+    <!-- SCHEMA.ORG STRUCTURED DATA UNTUK NAMA SITUS DI HASIL PENCARIAN GOOGLE -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "PasFoto Studio",
+      "alternateName": "ubah ukuran foto 2x3 3x4 dan 4x6",
+      "url": "https://pasfoto-studio-rosy.vercel.app/"
+    }
+    </script>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -616,7 +636,6 @@
         }
       }
 
-      // Panggil saat awal web dibuka
       fetchUsageStats();
 
       /* -------------------------------------------------------------
@@ -1265,7 +1284,6 @@
           return;
         }
 
-        // Jalankan unduhan
         const link = document.createElement("a");
         link.download = `pasfoto_${currentWidth}x${currentHeight}.jpg`;
         link.href = previewCanvas.toDataURL("image/jpeg", 0.95);
@@ -1273,7 +1291,6 @@
 
         showToast("success", "Unduhan Dimulai", "Foto berhasil diunduh.");
 
-        // Otomatis bertambah +1 di database real-time
         await incrementUsageCounter();
       });
 
@@ -1282,7 +1299,7 @@
 
         const userSession = localStorage.getItem('user_session');
         if (!userSession || userSession === "undefined") {
-          showToast("info", "Akses Terbatas", "Anda harus mendaftar atau login terlebih dahulu untuk mengunduh lembar cetak A4!");
+          showToast("info", "Akses Terbatas", "Anda meharusnya mendaftar atau login terlebih dahulu untuk mengunduh lembar cetak A4!");
           openAuthModal('register');
           return;
         }
@@ -1327,7 +1344,6 @@
 
         showToast("success", "Lembar Cetak A4", "Lembar A4 siap dicetak.");
 
-        // Otomatis bertambah +1 di database real-time
         await incrementUsageCounter();
       });
     </script>
