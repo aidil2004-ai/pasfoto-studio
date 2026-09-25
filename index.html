@@ -607,13 +607,13 @@
       lucide.createIcons();
 
       /* -------------------------------------------------------------
-            REAL-TIME COUNTER USAGE SYSTEM
+            REAL-TIME COUNTER USAGE SYSTEM (MENGGUNAKAN ENDPOINT /api/stats.js)
         ------------------------------------------------------------- */
       const usageCounterText = document.getElementById("usage-counter-text");
 
       async function fetchUsageStats() {
         try {
-          const res = await fetch('/api/stats');
+          const res = await fetch('/api/stats.js');
           const data = await res.json();
           if (data.status === 'success') {
             usageCounterText.textContent = Number(data.total_usage).toLocaleString('id-ID');
@@ -626,7 +626,7 @@
 
       async function incrementUsageCounter() {
         try {
-          const res = await fetch('/api/stats', { method: 'POST' });
+          const res = await fetch('/api/stats.js', { method: 'POST' });
           const data = await res.json();
           if (data.status === 'success') {
             usageCounterText.textContent = Number(data.total_usage).toLocaleString('id-ID');
@@ -1291,6 +1291,7 @@
 
         showToast("success", "Unduhan Dimulai", "Foto berhasil diunduh.");
 
+        // Memanggil fungsi penambah counter
         await incrementUsageCounter();
       });
 
@@ -1299,7 +1300,7 @@
 
         const userSession = localStorage.getItem('user_session');
         if (!userSession || userSession === "undefined") {
-          showToast("info", "Akses Terbatas", "Anda meharusnya mendaftar atau login terlebih dahulu untuk mengunduh lembar cetak A4!");
+          showToast("info", "Akses Terbatas", "Anda harus mendaftar atau login terlebih dahulu untuk mengunduh lembar cetak A4!");
           openAuthModal('register');
           return;
         }
@@ -1344,6 +1345,7 @@
 
         showToast("success", "Lembar Cetak A4", "Lembar A4 siap dicetak.");
 
+        // Memanggil fungsi penambah counter
         await incrementUsageCounter();
       });
     </script>
