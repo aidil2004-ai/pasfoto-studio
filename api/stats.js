@@ -1,56 +1,37 @@
-import { MongoClient } from 'mongodb';
+// Variabel penyimpan total unduhan sementara di server
+let totalUsage = 12; // Kamu bisa menentukan angka awal di sini (misal: 12)
 
-const uri = process.env.MONGODB_URI;
-let cachedClient = null;
-
-async function connectToDatabase() {
-  if (cachedClient) return cachedClient;
-  const client = await MongoClient.connect(uri);
-  cachedClient = client;
-  return client;
-}
-
-export default async function handler(req, res) {
-  // Atur CORS agar dapat diakses publik
+export default function handler(req, res) {
+  // Atur Header CORS agar dapat diakses dari domain Vercel mana saja
+  res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  );
 
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    res.status(200).end();
+    return;
   }
 
-  try {
-    const client = await connectToDatabase();
-    const db = client.db('pasfoto_db'); // sesuaikan nama database
-    const statsCollection = db.collection('stats');
-
-    // 1. GET: Ambil total jumlah penggunaan
-    if (req.method === 'GET') {
-      let statDoc = await statsCollection.findOne({ _id: 'usage_counter' });
-      if (!statDoc) {
-        // Jika belum ada dokumen, buat baru dengan nilai 0
-        await statsCollection.insertOne({ _id: 'usage_counter', total_usage: 0 });
-        return res.status(200).json({ status: 'success', total_usage: 0 });
-      }
-      return res.status(200).json({ status: 'success', total_usage: statDoc.total_usage || 0 });
-    }
-
-    // 2. POST: Tambahkan counter (+1) saat ada unduh/cetak
-    if (req.method === 'POST') {
-      const result = await statsCollection.findOneAndUpdate(
-        { _id: 'usage_counter' },
-        { $inc: { total_usage: 1 } },
-        { upsert: true, returnDocument: 'after' }
-      );
-
-      const updatedUsage = result.value ? result.value.total_usage : (result.total_usage || 1);
-      return res.status(200).json({ status: 'success', total_usage: updatedUsage });
-    }
-
-    return res.status(405).json({ message: 'Method Not Allowed' });
-  } catch (error) {
-    console.error('Stats API Error:', error);
-    return res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+  // 1. Jika browser meminta data angka terbaru (GET)
+  if (req.method === 'GET') {
+    return res.status(200).json({
+      status: 'success',
+      total_usage: totalUsage
+    });
   }
+
+  // 2. Jika tombol unduh/cetak diklik (POST) -> Angka otomatis +1
+  if (req.method === 'POST') {
+    totalUsage += 1;
+    return res.status(200).json({
+      status: 'success',
+      total_usage: totalUsage
+    });
+  }
+
+  return res.status(405).json({ status: 'error', message: 'Method Not Allowed' });
 }
