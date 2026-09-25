@@ -2,15 +2,15 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- JUDUL UTAMA WEBSITE (OPTIMASI SEO) -->
     <title>ubah ukuran foto 2x3 3x4 dan 4x6 - PasFoto Studio</title>
 
-    <!-- FAVICON KUSTOM (IKON FOTO/KAMERA KEREN) -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%236366f1'/><stop offset='100%' stop-color='%23a855f7'/></linearGradient></defs><rect width='100' height='100' rx='28' fill='url(%23g)'/><path d='M30 35h40a5 5 0 0 1 5 5v30a5 5 0 0 1-5 5H30a5 5 0 0 1-5-5V40a5 5 0 0 1 5-5z' fill='none' stroke='white' stroke-width='6'/><circle cx='50' cy='52' r='11' fill='none' stroke='white' stroke-width='6'/><path d='M40 35l4-8h12l4 8' fill='none' stroke='white' stroke-width='5' stroke-linejoin='round'/></svg>" />
-    
-    <!-- META DESKRIPSI UNTUK PENCAARIAN GOOGLE -->
+    <!-- FAVICON KUSTOM -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%236366f1'/><stop offset='100%' stop-color='%23a855f7'/></linearGradient></defs><rect width='100' height='100' rx='28' fill='url(%23g)'/><path d='M30 35h40a5 5 0 0 1 5 5v30a5 5 0 0 1-5 5H30a5 5 0 0 1-5-5V40a5 5 0 0 1 5-5z' fill='none' stroke='white' stroke-width='6'/><circle cx='50' cy='52' r='11' fill='none' stroke='white' stroke-width='6'/><path d='M40 35l4-8h12l4 8' fill='none' stroke='white' stroke-width='5' stroke-linejoin='round'/></svg>" />
+
+    <!-- META DESKRIPSI UNTUK PENCARIAN GOOGLE -->
     <meta name="description" content="Layanan gratis ubah ukuran foto 2x3 3x4 dan 4x6 secara instan dan mudah. Edit posisi pasfoto dan cetak langsung di lembar kertas A4 secara online." />
     <meta name="keywords" content="ubah ukuran foto 2x3 3x4 dan 4x6, ubah ukuran foto, pasfoto 2x3, pasfoto 3x4, pasfoto 4x6, edit pasfoto online, cetak pasfoto a4" />
     <meta name="robots" content="index, follow" />
@@ -73,6 +73,7 @@
         box-shadow:
           0 20px 25px -5px rgba(0, 0, 0, 0.5),
           0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        touch-action: none;
       }
       #preview-canvas:active {
         cursor: grabbing;
@@ -96,8 +97,9 @@
       /* ANIMATED TOAST NOTIFICATION */
       #toast-container {
         position: fixed;
-        top: 1.5rem;
-        right: 1.5rem;
+        top: 1rem;
+        right: 1rem;
+        left: 1rem;
         z-index: 100;
         display: flex;
         flex-direction: column;
@@ -105,73 +107,39 @@
         pointer-events: none;
       }
 
+      @media (min-width: 640px) {
+        #toast-container {
+          left: auto;
+          width: 380px;
+        }
+      }
+
       .toast-card {
         pointer-events: auto;
-        min-width: 300px;
-        max-width: 420px;
-        background: rgba(15, 23, 42, 0.85);
+        width: 100%;
+        background: rgba(15, 23, 42, 0.9);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
         border: 1px solid rgba(255, 255, 255, 0.15);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
         border-radius: 1rem;
-        padding: 1rem 1.25rem;
+        padding: 0.875rem 1rem;
         display: flex;
         align-items: center;
         gap: 0.75rem;
         color: #fff;
-        transform: translateX(120%);
+        transform: translateY(-20px);
         opacity: 0;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       .toast-card.show {
-        transform: translateX(0);
+        transform: translateY(0);
         opacity: 1;
-      }
-
-      /* Layout Mini Desktop untuk Layar HP */
-      @media (max-width: 1023px) {
-        .desktop-mini-container {
-          width: 1024px !important;
-          transform-origin: top left;
-        }
-
-        main {
-          flex-direction: row !important;
-          max-width: 1024px !important;
-          padding-left: 1.5rem !important;
-          padding-right: 1.5rem !important;
-        }
-
-        section.w-full.lg\:w-96 {
-          width: 320px !important;
-          flex-shrink: 0 !important;
-        }
-
-        section.flex-1 {
-          flex: 1 1 0% !important;
-        }
-
-        .hidden.sm\:flex {
-          display: flex !important;
-        }
-
-        .flex-col.sm\:flex-row {
-          flex-direction: row !important;
-        }
-
-        .w-full.sm\:w-auto {
-          width: auto !important;
-        }
-
-        .flex-1.sm\:flex-initial {
-          flex: initial !important;
-        }
       }
     </style>
   </head>
-  <body class="min-h-screen relative flex flex-col selection:bg-indigo-500 selection:text-white overflow-x-hidden">
+  <body class="min-h-screen relative flex flex-col selection:bg-indigo-500 selection:text-white">
     <!-- Container untuk Toast Animated Pop-up -->
     <div id="toast-container"></div>
 
@@ -179,127 +147,129 @@
     <canvas id="bg-canvas"></canvas>
 
     <!-- Content Wrapper -->
-    <div id="app-wrapper" class="relative z-10 flex flex-col min-h-screen desktop-mini-container">
+    <div id="app-wrapper" class="relative z-10 flex flex-col min-h-screen w-full">
       
       <!-- Header / Navbar -->
       <header class="w-full border-b border-slate-800/80 glass-panel sticky top-0 z-30">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="p-2.5 bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 rounded-2xl shadow-lg shadow-indigo-500/30 animate-pulse">
-              <i data-lucide="image-rotate" class="w-7 h-7 text-white"></i>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5">
+            <div class="p-2 bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 rounded-xl shadow-lg shadow-indigo-500/30">
+              <i data-lucide="image-rotate" class="w-5 h-5 sm:w-6 sm:h-6 text-white"></i>
             </div>
             <div>
-              <h1 class="text-xl sm:text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-indigo-400">
+              <h1 class="text-sm sm:text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-indigo-400 leading-tight">
                 Ubah Ukuran Foto 2x3, 3x4, 4x6
               </h1>
-              <p class="text-xs text-indigo-300 font-medium">
+              <p class="text-[10px] sm:text-xs text-indigo-300 font-medium">
                 Ubah Ukuran Foto Instant & Cetak A4
               </p>
             </div>
           </div>
 
           <!-- Tombol Akses Akun: Login & Daftar -->
-          <div id="auth-buttons" class="flex items-center gap-3">
+          <div id="auth-buttons" class="flex items-center gap-2">
             <button
               type="button"
               onclick="openAuthModal('login')"
-              class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-indigo-500/30 text-xs font-bold transition flex items-center gap-1.5"
+              class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-indigo-500/30 text-xs font-bold transition flex items-center gap-1"
             >
-              <i data-lucide="log-in" class="w-4 h-4"></i> Login
+              <i data-lucide="log-in" class="w-3.5 h-3.5"></i> Login
             </button>
             <button
               type="button"
               onclick="openAuthModal('register')"
-              class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-xs font-bold shadow-lg shadow-indigo-500/20 transition flex items-center gap-1.5"
+              class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-xs font-bold shadow-lg shadow-indigo-500/20 transition flex items-center gap-1"
             >
-              <i data-lucide="user-plus" class="w-4 h-4"></i> Daftar
+              <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Daftar
             </button>
           </div>
 
           <!-- Status User Setelah Login -->
-          <div id="user-profile" class="hidden items-center gap-3">
-            <span id="user-display-name" class="text-xs font-bold text-indigo-300 bg-indigo-500/10 border border-indigo-500/30 px-3 py-1.5 rounded-full"></span>
+          <div id="user-profile" class="hidden items-center gap-2">
+            <span id="user-display-name" class="text-xs font-bold text-indigo-300 bg-indigo-500/10 border border-indigo-500/30 px-2.5 py-1 rounded-full truncate max-w-[120px]"></span>
             <button onclick="handleLogout()" class="text-xs font-bold text-rose-400 hover:underline">Logout</button>
           </div>
         </div>
       </header>
 
       <!-- Main Workspace -->
-      <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8">
+      <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 flex flex-col lg:flex-row gap-6">
+        
         <!-- Left Controls Panel -->
-        <section class="w-full lg:w-96 flex flex-col gap-6">
+        <section class="w-full lg:w-96 flex flex-col gap-5 order-2 lg:order-1">
+          
           <!-- Step 1: Upload File -->
-          <div class="glass-panel p-6 rounded-3xl shadow-xl flex flex-col gap-4">
-            <h2 class="text-base font-bold text-white flex items-center gap-2">
-              <span class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">1</span>
+          <div class="glass-panel p-5 rounded-2xl sm:rounded-3xl shadow-xl flex flex-col gap-3">
+            <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">1</span>
               Unggah Foto
             </h2>
 
             <label
               for="image-upload"
-              class="group relative flex flex-col items-center justify-center border-2 border-dashed border-slate-700 hover:border-indigo-500 rounded-2xl p-6 transition-all duration-300 cursor-pointer bg-slate-900/40 hover:bg-indigo-950/20"
+              class="group relative flex flex-col items-center justify-center border-2 border-dashed border-slate-700 hover:border-indigo-500 rounded-xl p-5 transition-all duration-300 cursor-pointer bg-slate-900/40 hover:bg-indigo-950/20 text-center"
             >
               <input type="file" id="image-upload" accept="image/*" class="hidden" />
-              <div class="p-3 bg-indigo-500/10 rounded-full text-indigo-400 group-hover:scale-110 transition-transform duration-300">
-                <i data-lucide="upload-cloud" class="w-8 h-8"></i>
+              <div class="p-2.5 bg-indigo-500/10 rounded-full text-indigo-400 group-hover:scale-110 transition-transform">
+                <i data-lucide="upload-cloud" class="w-6 h-6"></i>
               </div>
-              <span class="mt-3 text-sm font-semibold text-slate-200" id="upload-status-label">Pilih Foto Utama</span>
-              <span class="text-xs text-slate-400 text-center mt-1">PNG, JPG, JPEG, atau WEBP</span>
+              <span class="mt-2 text-xs sm:text-sm font-semibold text-slate-200" id="upload-status-label">Pilih Foto Utama</span>
+              <span class="text-[10px] sm:text-xs text-slate-400 mt-0.5">PNG, JPG, JPEG, atau WEBP</span>
             </label>
           </div>
 
           <!-- Step 2: Select Size Presets -->
-          <div class="glass-panel p-6 rounded-3xl shadow-xl flex flex-col gap-4">
-            <h2 class="text-base font-bold text-white flex items-center gap-2">
-              <span class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">2</span>
+          <div class="glass-panel p-5 rounded-2xl sm:rounded-3xl shadow-xl flex flex-col gap-3">
+            <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">2</span>
               Pilih Ukuran Pasfoto
             </h2>
 
             <!-- Preset Option Buttons Grid -->
-            <div class="grid grid-cols-2 gap-2.5">
+            <div class="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 data-preset="2x3"
-                class="preset-btn px-3 py-3 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white transition-all flex flex-col items-center gap-0.5"
+                class="preset-btn px-3 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white transition-all flex flex-col items-center justify-center"
               >
-                <span class="text-sm font-bold">2 x 3</span>
-                <span class="text-[10px] text-slate-400">2x3 cm</span>
+                <span class="text-xs sm:text-sm font-bold">2 x 3</span>
+                <span class="text-[9px] sm:text-[10px] text-slate-400">2x3 cm</span>
               </button>
               <button
                 type="button"
                 data-preset="3x4"
-                class="preset-btn px-3 py-3 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white transition-all flex flex-col items-center gap-0.5"
+                class="preset-btn px-3 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white transition-all flex flex-col items-center justify-center"
               >
-                <span class="text-sm font-bold">3 x 4</span>
-                <span class="text-[10px] text-slate-400">3x4 cm</span>
+                <span class="text-xs sm:text-sm font-bold">3 x 4</span>
+                <span class="text-[9px] sm:text-[10px] text-slate-400">3x4 cm</span>
               </button>
               <button
                 type="button"
                 data-preset="4x6"
-                class="preset-btn px-3 py-3 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white transition-all flex flex-col items-center gap-0.5"
+                class="preset-btn px-3 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white transition-all flex flex-col items-center justify-center"
               >
-                <span class="text-sm font-bold">4 x 6</span>
-                <span class="text-[10px] text-slate-400">4x6 cm</span>
+                <span class="text-xs sm:text-sm font-bold">4 x 6</span>
+                <span class="text-[9px] sm:text-[10px] text-slate-400">4x6 cm</span>
               </button>
               <button
                 type="button"
                 data-preset="custom"
                 id="btn-preset-custom"
-                class="preset-btn px-3 py-3 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white transition-all flex flex-col items-center gap-0.5"
+                class="preset-btn px-3 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white transition-all flex flex-col items-center justify-center"
               >
-                <span class="text-sm font-bold flex items-center gap-1">
-                  <i data-lucide="sliders" class="w-3.5 h-3.5 text-indigo-400"></i> Custom
+                <span class="text-xs sm:text-sm font-bold flex items-center gap-1">
+                  <i data-lucide="sliders" class="w-3 h-3 text-indigo-400"></i> Custom
                 </span>
-                <span class="text-[10px] text-slate-400">Manual (px)</span>
+                <span class="text-[9px] sm:text-[10px] text-slate-400">Manual (px)</span>
               </button>
             </div>
 
             <!-- Custom Size Input Panel -->
-            <div id="custom-size-panel" class="hidden flex-col gap-3 pt-3 border-t border-slate-800/80 mt-1">
-              <p class="text-[11px] font-semibold text-indigo-300">Masukkan Dimensi Manual (Pixel):</p>
-              <div class="grid grid-cols-2 gap-3">
+            <div id="custom-size-panel" class="hidden flex-col gap-2 pt-2 border-t border-slate-800/80 mt-1">
+              <p class="text-[10px] font-semibold text-indigo-300">Masukkan Dimensi Manual (Pixel):</p>
+              <div class="grid grid-cols-2 gap-2">
                 <div>
-                  <label class="text-[11px] text-slate-400 block mb-1">Lebar (px)</label>
+                  <label class="text-[10px] text-slate-400 block mb-1">Lebar (px)</label>
                   <input
                     type="number"
                     id="custom-width"
@@ -310,7 +280,7 @@
                   />
                 </div>
                 <div>
-                  <label class="text-[11px] text-slate-400 block mb-1">Tinggi (px)</label>
+                  <label class="text-[10px] text-slate-400 block mb-1">Tinggi (px)</label>
                   <input
                     type="number"
                     id="custom-height"
@@ -325,14 +295,14 @@
           </div>
 
           <!-- Step 3: Adjustments -->
-          <div class="glass-panel p-6 rounded-3xl shadow-xl flex flex-col gap-4">
-            <h2 class="text-base font-bold text-white flex items-center gap-2">
-              <span class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">3</span>
+          <div class="glass-panel p-5 rounded-2xl sm:rounded-3xl shadow-xl flex flex-col gap-3">
+            <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">3</span>
               Penyesuaian Posisi
             </h2>
 
             <!-- Zoom Slider -->
-            <div class="flex flex-col gap-1.5">
+            <div class="flex flex-col gap-1">
               <div class="flex justify-between items-center text-xs">
                 <span class="text-slate-300 font-medium">Zoom / Skala</span>
                 <span id="zoom-val" class="text-indigo-400 font-bold">100%</span>
@@ -348,7 +318,7 @@
             </div>
 
             <!-- Rotation Slider -->
-            <div class="flex flex-col gap-1.5">
+            <div class="flex flex-col gap-1">
               <div class="flex justify-between items-center text-xs">
                 <span class="text-slate-300 font-medium">Rotasi Gambar</span>
                 <span id="rotate-val" class="text-indigo-400 font-bold">0°</span>
@@ -366,77 +336,78 @@
             <button
               type="button"
               id="btn-reset"
-              class="w-full py-2 bg-slate-800/80 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold border border-slate-700 transition flex items-center justify-center gap-2 mt-2"
+              class="w-full py-2 bg-slate-800/80 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold border border-slate-700 transition flex items-center justify-center gap-2 mt-1"
             >
-              <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset Posisi Foto
+              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset Posisi Foto
             </button>
           </div>
         </section>
 
         <!-- Right Preview & Export Panel -->
-        <section class="flex-1 flex flex-col gap-6">
+        <section class="flex-1 flex flex-col gap-5 order-1 lg:order-2">
+          
           <!-- Main Canvas Preview Container -->
-          <div class="glass-panel p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col items-center justify-center min-h-[420px] relative overflow-hidden">
-            <div class="absolute top-4 left-4 flex items-center gap-2 text-xs text-slate-400 font-medium">
-              <i data-lucide="move" class="w-4 h-4 text-indigo-400"></i> Klik & Geser foto untuk sesuaikan posisi
+          <div class="glass-panel p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-xl flex flex-col items-center justify-center min-h-[350px] relative overflow-hidden">
+            <div class="w-full flex items-center gap-2 text-[11px] sm:text-xs text-slate-400 font-medium mb-2">
+              <i data-lucide="move" class="w-3.5 h-3.5 text-indigo-400 flex-shrink-0"></i> 
+              <span>Klik & geser foto di dalam kotak untuk sesuaikan posisi</span>
             </div>
 
             <!-- Real-time Canvas -->
-            <div class="p-3 bg-slate-950/80 border border-slate-800 rounded-2xl shadow-2xl relative my-6">
-              <canvas id="preview-canvas" width="250" height="350" class="rounded-lg bg-slate-900 border border-slate-800 transition-shadow"></canvas>
+            <div class="p-2 sm:p-3 bg-slate-950/80 border border-slate-800 rounded-2xl shadow-2xl relative my-3 max-w-full overflow-hidden">
+              <canvas id="preview-canvas" width="250" height="350" class="rounded-lg bg-slate-900 border border-slate-800 transition-shadow max-w-full h-auto"></canvas>
             </div>
 
-            <div class="text-center">
-              <p id="size-info-label" class="text-sm font-bold text-slate-200">Foto Terunggah (Pilih Ukuran)</p>
-              <p class="text-xs text-slate-400 mt-1">Pilih salah satu tombol ukuran di sebelah kiri untuk mengaktifkan unduh & cetak.</p>
+            <div class="text-center px-2">
+              <p id="size-info-label" class="text-xs sm:text-sm font-bold text-slate-200">Foto Terunggah (Pilih Ukuran)</p>
+              <p class="text-[10px] sm:text-xs text-slate-400 mt-0.5">Pilih salah satu tombol ukuran di sebelah kiri/atas untuk mengaktifkan unduh & cetak.</p>
             </div>
           </div>
 
           <!-- Export & Download Actions -->
-          <div class="glass-panel p-6 rounded-3xl shadow-xl flex flex-col sm:flex-row gap-4 items-center justify-between">
-            <div class="flex items-center gap-3 w-full sm:w-auto">
-              <button
-                type="button"
-                id="btn-download-single"
-                disabled
-                class="flex-1 sm:flex-initial px-6 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold rounded-2xl shadow-lg shadow-indigo-500/25 transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                <i data-lucide="download" class="w-5 h-5"></i> Unduh Foto
-              </button>
-            </div>
+          <div class="glass-panel p-4 sm:p-5 rounded-2xl sm:rounded-3xl shadow-xl flex flex-col sm:flex-row gap-3 items-center justify-between">
+            <button
+              type="button"
+              id="btn-download-single"
+              disabled
+              class="w-full sm:w-auto flex-1 px-5 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-indigo-500/25 transition-all flex items-center justify-center gap-2"
+            >
+              <i data-lucide="download" class="w-4 h-4"></i> Unduh Foto
+            </button>
 
             <button
               type="button"
               id="btn-download-a4"
               disabled
-              class="w-full sm:w-auto px-6 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-2xl border border-slate-700 transition-all duration-300 flex items-center justify-center gap-2"
+              class="w-full sm:w-auto px-5 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs sm:text-sm rounded-xl border border-slate-700 transition-all flex items-center justify-center gap-2"
             >
-              <i data-lucide="printer" class="w-5 h-5 text-indigo-400"></i> Buat Lembar Cetak A4
+              <i data-lucide="printer" class="w-4 h-4 text-indigo-400"></i> Buat Lembar Cetak A4
             </button>
           </div>
 
           <!-- SECTION DUKUNGAN SAWERIA -->
-          <div class="glass-panel p-6 sm:p-8 rounded-3xl shadow-2xl border border-amber-500/30 bg-gradient-to-r from-amber-950/30 via-slate-900/80 to-orange-950/30 relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-6 group hover:border-amber-500/50 transition-all duration-300">
+          <div class="glass-panel p-5 sm:p-6 rounded-2xl sm:rounded-3xl shadow-xl border border-amber-500/30 bg-gradient-to-r from-amber-950/30 via-slate-900/80 to-orange-950/30 flex flex-col sm:flex-row items-center justify-between gap-4">
             
-            <div class="flex items-center gap-4">
-              <div class="p-3.5 bg-gradient-to-tr from-amber-500 to-orange-500 rounded-2xl shadow-lg shadow-amber-500/20 text-slate-950 flex-shrink-0 group-hover:scale-110 transition-transform">
-                <i data-lucide="heart" class="w-7 h-7 fill-slate-950"></i>
+            <div class="flex items-center gap-3.5 w-full sm:w-auto">
+              <div class="p-3 bg-gradient-to-tr from-amber-500 to-orange-500 rounded-xl shadow-lg shadow-amber-500/20 text-slate-950 flex-shrink-0">
+                <i data-lucide="heart" class="w-6 h-6 fill-slate-950"></i>
               </div>
               <div>
-                <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-                  Dukung Pengembang Web <span class="text-xs bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2.5 py-0.5 rounded-full font-mono">Saweria</span>
+                <h3 class="text-sm sm:text-base font-bold text-white flex items-center gap-1.5">
+                  Dukung Pengembang <span class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.2 rounded-full font-mono">Saweria</span>
                 </h3>
-                <p class="text-xs text-slate-300 mt-1 max-w-md leading-relaxed">
-                  Suka dengan layanan PasFoto Studio? Dukungan sukarela Anda sangat berarti untuk menjaga server tetap gratis dan selalu dapat diakses!
+                <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5 leading-snug">
+                  Suka dengan PasFoto Studio? Dukungan sukarela Anda menjaga server tetap gratis!
                 </p>
               </div>
             </div>
 
+            <!-- SAWERIA LINK RESMI BAPAK (https://saweria.co/fotostudio) -->
             <a
-              href="https://saweria.co/"
+              href="https://saweria.co/fotostudio"
               target="_blank"
               rel="noopener noreferrer"
-              class="w-full sm:w-auto px-6 py-3.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-extrabold text-xs rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 transition-all duration-300 flex items-center justify-center gap-2.5 flex-shrink-0"
+              class="w-full sm:w-auto px-5 py-3 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-extrabold text-xs rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 flex-shrink-0"
             >
               <i data-lucide="coffee" class="w-4 h-4"></i> Traktir Kopi via Saweria
             </a>
@@ -450,66 +421,66 @@
     <canvas id="a4-canvas" class="hidden"></canvas>
 
     <!-- MODAL FITUR AUTENTIKASI -->
-    <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md hidden transition-all duration-300">
-      <div class="glass-panel p-8 rounded-3xl max-w-md w-full mx-4 relative border border-slate-700/80 shadow-2xl">
+    <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md hidden p-4">
+      <div class="glass-panel p-6 sm:p-8 rounded-2xl sm:rounded-3xl max-w-md w-full relative border border-slate-700/80 shadow-2xl">
         <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
-          <i data-lucide="x" class="w-6 h-6"></i>
+          <i data-lucide="x" class="w-5 h-5"></i>
         </button>
 
         <!-- FORM LOGIN -->
-        <div id="form-login" class="flex flex-col gap-4">
-          <h3 class="text-xl font-bold text-white flex items-center gap-2">
+        <div id="form-login" class="flex flex-col gap-3.5">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
             <i data-lucide="log-in" class="text-indigo-400"></i> Masuk ke Akun
           </h3>
           <div>
             <label class="text-xs text-slate-300 font-medium block mb-1">Username</label>
-            <input type="text" id="login-username" placeholder="Masukkan Username" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500" />
+            <input type="text" id="login-username" placeholder="Masukkan Username" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" />
           </div>
           <div>
             <label class="text-xs text-slate-300 font-medium block mb-1">Password</label>
-            <input type="password" id="login-password" placeholder="Masukkan Password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500" />
+            <input type="password" id="login-password" placeholder="Masukkan Password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" />
           </div>
           <div class="text-right">
             <button onclick="switchAuthForm('forgot')" class="text-xs text-indigo-400 hover:underline font-semibold">
               Lupa Username / Password?
             </button>
           </div>
-          <button type="button" id="btn-submit-login" onclick="handleLogin()" class="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 font-bold rounded-xl text-sm text-white shadow-lg transition hover:opacity-90 mt-2">
+          <button type="button" id="btn-submit-login" onclick="handleLogin()" class="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 font-bold rounded-xl text-xs sm:text-sm text-white shadow-lg transition hover:opacity-90 mt-1">
             Login
           </button>
-          <p class="text-xs text-slate-400 text-center mt-2">
+          <p class="text-xs text-slate-400 text-center mt-1">
             Belum punya akun? <button onclick="switchAuthForm('register')" class="text-indigo-400 font-semibold hover:underline">Daftar sekarang</button>
           </p>
         </div>
 
         <!-- FORM DAFTAR -->
-        <div id="form-register" class="flex flex-col gap-4 hidden">
-          <h3 class="text-xl font-bold text-white flex items-center gap-2">
+        <div id="form-register" class="flex flex-col gap-3.5 hidden">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
             <i data-lucide="user-plus" class="text-indigo-400"></i> Buat Akun Baru
           </h3>
           <div>
             <label class="text-xs text-slate-300 font-medium block mb-1">Email</label>
-            <input type="email" id="reg-email" placeholder="contoh@email.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500" />
+            <input type="email" id="reg-email" placeholder="contoh@email.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" />
           </div>
           <div>
             <label class="text-xs text-slate-300 font-medium block mb-1">Username</label>
-            <input type="text" id="reg-username" placeholder="Buat Username Baru" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500" />
+            <input type="text" id="reg-username" placeholder="Buat Username Baru" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" />
           </div>
           <div>
             <label class="text-xs text-slate-300 font-medium block mb-1">Password</label>
-            <input type="password" id="reg-password" placeholder="Buat Password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500" />
+            <input type="password" id="reg-password" placeholder="Buat Password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" />
           </div>
-          <button type="button" id="btn-submit-register" onclick="handleRegister()" class="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 font-bold rounded-xl text-sm text-white shadow-lg transition hover:opacity-90 mt-2">
+          <button type="button" id="btn-submit-register" onclick="handleRegister()" class="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 font-bold rounded-xl text-xs sm:text-sm text-white shadow-lg transition hover:opacity-90 mt-1">
             Daftar Akun
           </button>
-          <p class="text-xs text-slate-400 text-center mt-2">
+          <p class="text-xs text-slate-400 text-center mt-1">
             Sudah punya akun? <button onclick="switchAuthForm('login')" class="text-indigo-400 font-semibold hover:underline">Login di sini</button>
           </p>
         </div>
 
         <!-- FORM LUPA USERNAME / PASSWORD -->
-        <div id="form-forgot" class="flex flex-col gap-4 hidden">
-          <h3 class="text-xl font-bold text-white flex items-center gap-2">
+        <div id="form-forgot" class="flex flex-col gap-3.5 hidden">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
             <i data-lucide="key-round" class="text-indigo-400"></i> Pemulihan Akun
           </h3>
 
@@ -517,39 +488,39 @@
           <div id="forgot-step-1" class="flex flex-col gap-3">
             <div>
               <label class="text-xs text-slate-300 font-medium block mb-1">Pilih Masalah Anda</label>
-              <select id="forgot-type" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500">
+              <select id="forgot-type" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
                 <option value="password">Lupa Password</option>
                 <option value="username">Lupa Username</option>
               </select>
             </div>
             <div>
               <label class="text-xs text-slate-300 font-medium block mb-1">Email Terdaftar</label>
-              <input type="email" id="forgot-email" placeholder="Masukkan email Anda" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500" />
+              <input type="email" id="forgot-email" placeholder="Masukkan email Anda" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" />
             </div>
-            <button type="button" id="btn-submit-sendcode" onclick="handleSendCode()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-sm text-white transition mt-2">
+            <button type="button" id="btn-submit-sendcode" onclick="handleSendCode()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-xs sm:text-sm text-white transition mt-1">
               Kirim Kode Verifikasi Email
             </button>
           </div>
 
           <!-- Tahap 2: Input Kode Verifikasi Huruf -->
           <div id="forgot-step-2" class="flex flex-col gap-3 hidden">
-            <div class="bg-indigo-950/40 border border-indigo-500/30 p-3 rounded-xl text-xs text-indigo-300">
+            <div class="bg-indigo-950/40 border border-indigo-500/30 p-2.5 rounded-xl text-xs text-indigo-300">
               Kode verifikasi huruf telah dikirim ke email Anda. Silakan periksa kotak masuk/spam.
             </div>
             <div>
               <label class="text-xs text-slate-300 font-medium block mb-1">Masukkan Kode Verifikasi (Hanya Huruf)</label>
-              <input type="text" id="forgot-code" placeholder="Contoh: ABCDEF" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 tracking-widest uppercase font-mono text-center" />
+              <input type="text" id="forgot-code" placeholder="Contoh: ABCDEF" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 tracking-widest uppercase font-mono text-center" />
             </div>
             <div id="new-password-container">
               <label class="text-xs text-slate-300 font-medium block mb-1">Password Baru</label>
-              <input type="password" id="new-password" placeholder="Masukkan Password Baru" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500" />
+              <input type="password" id="new-password" placeholder="Masukkan Password Baru" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500" />
             </div>
-            <button type="button" id="btn-submit-verify" onclick="handleVerifyCode()" class="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 font-bold rounded-xl text-sm text-white shadow-lg transition hover:opacity-90 mt-2">
+            <button type="button" id="btn-submit-verify" onclick="handleVerifyCode()" class="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 font-bold rounded-xl text-xs sm:text-sm text-white shadow-lg transition hover:opacity-90 mt-1">
               Verifikasi & Pulihkan Akun
             </button>
           </div>
 
-          <div class="text-center mt-2">
+          <div class="text-center mt-1">
             <button onclick="switchAuthForm('login')" class="text-xs text-slate-400 hover:text-white">
               Kembali ke Login
             </button>
@@ -560,33 +531,32 @@
     </div>
 
     <!-- MODAL POPUP HASIL PEMULIHAN USERNAME (STRICT / MODAL LOCK) -->
-    <div id="result-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg hidden transition-all duration-300">
-      <div class="glass-panel p-8 rounded-3xl max-w-sm w-full mx-4 relative border border-indigo-500/40 shadow-2xl text-center flex flex-col items-center gap-4">
+    <div id="result-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg hidden p-4">
+      <div class="glass-panel p-6 sm:p-8 rounded-2xl sm:rounded-3xl max-w-sm w-full relative border border-indigo-500/40 shadow-2xl text-center flex flex-col items-center gap-3.5">
         
-        <!-- Tombol Close X -->
         <button onclick="closeResultModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition p-1 rounded-lg bg-slate-800/60 hover:bg-slate-700">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
 
-        <div class="p-4 bg-indigo-500/20 text-indigo-400 rounded-full border border-indigo-500/30">
-          <i data-lucide="user-check" class="w-10 h-10"></i>
+        <div class="p-3 bg-indigo-500/20 text-indigo-400 rounded-full border border-indigo-500/30">
+          <i data-lucide="user-check" class="w-8 h-8"></i>
         </div>
 
         <div>
-          <h3 class="text-lg font-bold text-white">Username Ditemukan!</h3>
-          <p class="text-xs text-slate-300 mt-1">Berikut adalah username terdaftar milik akun Anda:</p>
+          <h3 class="text-base sm:text-lg font-bold text-white">Username Ditemukan!</h3>
+          <p class="text-xs text-slate-300 mt-0.5">Berikut adalah username terdaftar milik akun Anda:</p>
         </div>
 
         <!-- Tampilan Username Besar -->
-        <div class="w-full bg-slate-900/90 border border-indigo-500/50 rounded-2xl p-4 my-1 shadow-inner">
-          <span id="result-username-text" class="text-xl font-extrabold text-indigo-400 tracking-wider font-mono select-all">
+        <div class="w-full bg-slate-900/90 border border-indigo-500/50 rounded-xl p-3 my-0.5 shadow-inner">
+          <span id="result-username-text" class="text-lg sm:text-xl font-extrabold text-indigo-400 tracking-wider font-mono select-all">
             -
           </span>
         </div>
 
-        <p class="text-[11px] text-slate-400">Username telah disalin otomatis ke form Login.</p>
+        <p class="text-[10px] sm:text-[11px] text-slate-400">Username telah disalin otomatis ke form Login.</p>
 
-        <button onclick="closeResultModal()" class="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 font-bold rounded-xl text-xs text-white shadow-lg transition">
+        <button onclick="closeResultModal()" class="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 font-bold rounded-xl text-xs text-white shadow-lg transition">
           Tutup & Lanjut Login
         </button>
 
@@ -627,25 +597,23 @@
         toast.classList.add(borderColor);
 
         toast.innerHTML = `
-          <div class="p-2 rounded-xl bg-slate-800/80 ${iconColor} flex-shrink-0">
-            <i data-lucide="${iconName}" class="w-5 h-5"></i>
+          <div class="p-1.5 rounded-lg bg-slate-800/80 ${iconColor} flex-shrink-0">
+            <i data-lucide="${iconName}" class="w-4 h-4"></i>
           </div>
-          <div class="flex-1">
-            <h4 class="text-xs font-bold text-white">${title}</h4>
-            <p class="text-[11px] text-slate-300 leading-snug mt-0.5">${message}</p>
+          <div class="flex-1 min-w-0">
+            <h4 class="text-xs font-bold text-white truncate">${title}</h4>
+            <p class="text-[10px] text-slate-300 leading-snug mt-0.5">${message}</p>
           </div>
         `;
 
         container.appendChild(toast);
         lucide.createIcons();
 
-        // Trigger Smooth Entrance Animation
         setTimeout(() => toast.classList.add("show"), 10);
 
-        // Auto Dismiss
         setTimeout(() => {
           toast.classList.remove("show");
-          setTimeout(() => toast.remove(), 400);
+          setTimeout(() => toast.remove(), 300);
         }, 3500);
       }
 
@@ -692,7 +660,6 @@
         }
       }
 
-      // Handler Async Fetch untuk Register, Login, Send Code, & Verify
       async function handleRegister() {
         const email = document.getElementById("reg-email").value;
         const username = document.getElementById("reg-username").value;
@@ -840,19 +807,14 @@
           const data = await res.json();
 
           if (data.status === 'success') {
-            // Bersihkan form pemulihan
             document.getElementById("forgot-email").value = "";
             document.getElementById("forgot-code").value = "";
             document.getElementById("new-password").value = "";
 
             if (type === 'username' && data.username) {
-              // Otomatis isikan username ke kolom login
               document.getElementById("login-username").value = data.username;
-              
-              // Tampilkan Pop-Up Tengah Lock Modal khusus untuk Lupa Username
               openResultModal(data.username);
             } else {
-              // Untuk Lupa Password, cukup tampilkan toast & pindahkan ke form login
               showToast("success", "Pemulihan Berhasil", data.message);
               closeAuthModal();
               switchAuthForm('login');
@@ -895,31 +857,6 @@
       checkUserSession();
 
       /* -------------------------------------------------------------
-            AUTOSCALE LOGIC UNTUK HP
-        ------------------------------------------------------------- */
-      function autoScaleDesktopView() {
-        const wrapper = document.getElementById("app-wrapper");
-        const screenWidth = window.innerWidth;
-        const desktopWidth = 1024;
-
-        if (screenWidth < desktopWidth) {
-          const scale = screenWidth / desktopWidth;
-          wrapper.style.transform = `scale(${scale})`;
-          wrapper.style.width = `${desktopWidth}px`;
-          const originalHeight = wrapper.offsetHeight;
-          document.body.style.height = `${originalHeight * scale}px`;
-        } else {
-          wrapper.style.transform = "none";
-          wrapper.style.width = "100%";
-          document.body.style.height = "auto";
-        }
-      }
-
-      window.addEventListener("resize", autoScaleDesktopView);
-      window.addEventListener("DOMContentLoaded", autoScaleDesktopView);
-      setTimeout(autoScaleDesktopView, 100);
-
-      /* -------------------------------------------------------------
             ANIMATED BACKGROUND: AURORA NEBULA & FLOATING PARTICLES
         ------------------------------------------------------------- */
       const bgCanvas = document.getElementById("bg-canvas");
@@ -932,7 +869,7 @@
       window.addEventListener("resize", resizeBgCanvas);
       resizeBgCanvas();
 
-      const particleCount = 70;
+      const particleCount = 50;
       const particles = [];
       const colors = ["rgba(99, 102, 241,", "rgba(236, 72, 153,", "rgba(168, 85, 247,", "rgba(56, 189, 248,"];
 
@@ -940,11 +877,11 @@
         particles.push({
           x: Math.random() * bgCanvas.width,
           y: Math.random() * bgCanvas.height,
-          radius: Math.random() * 2.5 + 0.5,
+          radius: Math.random() * 2 + 0.5,
           color: colors[Math.floor(Math.random() * colors.length)],
           alpha: Math.random() * 0.7 + 0.3,
-          speedX: (Math.random() - 0.5) * 0.8,
-          speedY: (Math.random() - 0.5) * 0.8 - 0.2,
+          speedX: (Math.random() - 0.5) * 0.6,
+          speedY: (Math.random() - 0.5) * 0.6 - 0.2,
           pulse: Math.random() * 0.05 + 0.01,
         });
       }
@@ -963,39 +900,17 @@
         const wave1X = Math.sin(time * 0.7) * w * 0.35 + w * 0.5;
         const wave1Y = Math.cos(time * 0.5) * h * 0.35 + h * 0.4;
 
-        const wave2X = Math.cos(time * 0.9) * w * 0.4 + w * 0.5;
-        const wave2Y = Math.sin(time * 0.8) * h * 0.4 + h * 0.6;
-
-        const wave3X = Math.sin(time * 1.1) * w * 0.3 + w * 0.3;
-        const wave3Y = Math.cos(time * 1.2) * h * 0.3 + h * 0.7;
-
         const g1 = bgCtx.createRadialGradient(wave1X, wave1Y, 10, wave1X, wave1Y, Math.max(w, h) * 0.55);
-        g1.addColorStop(0, "rgba(79, 70, 229, 0.35)");
+        g1.addColorStop(0, "rgba(79, 70, 229, 0.3)");
         g1.addColorStop(1, "rgba(9, 13, 22, 0)");
-
-        const g2 = bgCtx.createRadialGradient(wave2X, wave2Y, 10, wave2X, wave2Y, Math.max(w, h) * 0.5);
-        g2.addColorStop(0, "rgba(236, 72, 153, 0.25)");
-        g2.addColorStop(1, "rgba(9, 13, 22, 0)");
-
-        const g3 = bgCtx.createRadialGradient(wave3X, wave3Y, 10, wave3X, wave3Y, Math.max(w, h) * 0.45);
-        g3.addColorStop(0, "rgba(6, 182, 212, 0.2)");
-        g3.addColorStop(1, "rgba(9, 13, 22, 0)");
 
         bgCtx.fillStyle = g1;
         bgCtx.fillRect(0, 0, w, h);
 
-        bgCtx.fillStyle = g2;
-        bgCtx.fillRect(0, 0, w, h);
-
-        bgCtx.fillStyle = g3;
-        bgCtx.fillRect(0, 0, w, h);
-
         for (let i = 0; i < particles.length; i++) {
           const p = particles[i];
-
           p.x += p.speedX;
           p.y += p.speedY;
-          p.alpha += Math.sin(time * 5) * p.pulse * 0.1;
 
           if (p.x < 0) p.x = w;
           if (p.x > w) p.x = 0;
@@ -1005,26 +920,7 @@
           bgCtx.beginPath();
           bgCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
           bgCtx.fillStyle = p.color + Math.max(0.1, Math.min(1, p.alpha)) + ")";
-          bgCtx.shadowBlur = 10;
-          bgCtx.shadowColor = p.color + "1)";
           bgCtx.fill();
-          bgCtx.shadowBlur = 0;
-
-          for (let j = i + 1; j < particles.length; j++) {
-            const p2 = particles[j];
-            const dx = p.x - p2.x;
-            const dy = p.y - p2.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist < 110) {
-              bgCtx.beginPath();
-              bgCtx.moveTo(p.x, p.y);
-              bgCtx.lineTo(p2.x, p2.y);
-              bgCtx.strokeStyle = `rgba(129, 140, 248, ${0.2 * (1 - dist / 110)})`;
-              bgCtx.lineWidth = 0.6;
-              bgCtx.stroke();
-            }
-          }
         }
 
         requestAnimationFrame(animateBg);
@@ -1113,10 +1009,7 @@
         }
 
         const targetW = currentWidth > 0 ? currentWidth : 250;
-        const targetH =
-          currentHeight > 0
-            ? currentHeight
-            : Math.round(250 * (uploadedImage.height / uploadedImage.width));
+        const targetH = currentHeight > 0 ? currentHeight : Math.round(250 * (uploadedImage.height / uploadedImage.width));
 
         previewCanvas.width = targetW;
         previewCanvas.height = targetH;
@@ -1153,10 +1046,7 @@
         if (!uploadedImage) return;
 
         const targetW = currentWidth > 0 ? currentWidth : 250;
-        const targetH =
-          currentHeight > 0
-            ? currentHeight
-            : Math.round(250 * (uploadedImage.height / uploadedImage.width));
+        const targetH = currentHeight > 0 ? currentHeight : Math.round(250 * (uploadedImage.height / uploadedImage.width));
 
         const scaleW = targetW / uploadedImage.width;
         const scaleH = targetH / uploadedImage.height;
@@ -1223,7 +1113,6 @@
             }
           }
           checkActionButtonsState();
-          autoScaleDesktopView();
         });
       });
 
@@ -1273,28 +1162,18 @@
         }
       });
 
-      function getScaledCoords(e) {
-        const screenWidth = window.innerWidth;
-        const scaleFactor = screenWidth < 1024 ? screenWidth / 1024 : 1;
-        return {
-          x: e.clientX / scaleFactor,
-          y: e.clientY / scaleFactor
-        };
-      }
-
+      // Drag Canvas Interactivity
       previewCanvas.addEventListener("mousedown", (e) => {
         if (!uploadedImage) return;
         isDragging = true;
-        const coords = getScaledCoords(e);
-        startMouseX = coords.x - offsetX;
-        startMouseY = coords.y - offsetY;
+        startMouseX = e.clientX - offsetX;
+        startMouseY = e.clientY - offsetY;
       });
 
       window.addEventListener("mousemove", (e) => {
         if (!isDragging) return;
-        const coords = getScaledCoords(e);
-        offsetX = coords.x - startMouseX;
-        offsetY = coords.y - startMouseY;
+        offsetX = e.clientX - startMouseX;
+        offsetY = e.clientY - startMouseY;
         renderCanvas();
       });
 
@@ -1306,17 +1185,15 @@
         if (!uploadedImage || e.touches.length !== 1) return;
         isDragging = true;
         const touch = e.touches[0];
-        const coords = getScaledCoords(touch);
-        startMouseX = coords.x - offsetX;
-        startMouseY = coords.y - offsetY;
+        startMouseX = touch.clientX - offsetX;
+        startMouseY = touch.clientY - offsetY;
       });
 
       window.addEventListener("touchmove", (e) => {
         if (!isDragging || e.touches.length !== 1) return;
         const touch = e.touches[0];
-        const coords = getScaledCoords(touch);
-        offsetX = coords.x - startMouseX;
-        offsetY = coords.y - startMouseY;
+        offsetX = touch.clientX - startMouseX;
+        offsetY = touch.clientY - startMouseY;
         renderCanvas();
       });
 
@@ -1330,7 +1207,6 @@
       btnDownloadSingle.addEventListener("click", () => {
         if (!uploadedImage || currentWidth <= 0 || currentHeight <= 0) return;
 
-        // Cek apakah user sudah login
         const userSession = localStorage.getItem('user_session');
         if (!userSession || userSession === "undefined") {
           showToast("info", "Akses Terbatas", "Anda harus mendaftar atau login terlebih dahulu untuk mengunduh hasil foto!");
@@ -1348,7 +1224,6 @@
       btnDownloadA4.addEventListener("click", () => {
         if (!uploadedImage || currentWidth <= 0 || currentHeight <= 0) return;
 
-        // Cek apakah user sudah login
         const userSession = localStorage.getItem('user_session');
         if (!userSession || userSession === "undefined") {
           showToast("info", "Akses Terbatas", "Anda harus mendaftar atau login terlebih dahulu untuk mengunduh lembar cetak A4!");
