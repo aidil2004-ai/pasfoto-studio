@@ -198,6 +198,25 @@
         <!-- Left Controls Panel -->
         <section class="w-full lg:w-96 flex flex-col gap-5 order-2 lg:order-1">
           
+          <!-- COUNTER WIDGET: STATISTIK PENGGUNAAN REAL-TIME -->
+          <div class="glass-panel p-4 rounded-2xl shadow-xl flex items-center justify-between border border-emerald-500/30 bg-gradient-to-r from-emerald-950/20 to-slate-900/60">
+            <div class="flex items-center gap-3">
+              <div class="p-2.5 bg-emerald-500/20 text-emerald-400 rounded-xl border border-emerald-500/30 animate-pulse">
+                <i data-lucide="activity" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="text-[11px] font-semibold text-slate-300">Total Pasfoto Berhasil Dibuat</p>
+                <div class="flex items-baseline gap-1.5 mt-0.5">
+                  <span id="usage-counter-text" class="text-xl sm:text-2xl font-black text-emerald-400 font-mono">...</span>
+                  <span class="text-[10px] text-emerald-300/80 font-bold uppercase">kali diunduh</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-1 text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Live
+            </div>
+          </div>
+
           <!-- Step 1: Upload File -->
           <div class="glass-panel p-5 rounded-2xl sm:rounded-3xl shadow-xl flex flex-col gap-3">
             <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
@@ -402,7 +421,7 @@
               </div>
             </div>
 
-            <!-- SAWERIA LINK RESMI BAPAK (https://saweria.co/fotostudio) -->
+            <!-- SAWERIA LINK RESMI -->
             <a
               href="https://saweria.co/fotostudio"
               target="_blank"
@@ -530,7 +549,7 @@
       </div>
     </div>
 
-    <!-- MODAL POPUP HASIL PEMULIHAN USERNAME (STRICT / MODAL LOCK) -->
+    <!-- MODAL POPUP HASIL PEMULIHAN USERNAME -->
     <div id="result-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg hidden p-4">
       <div class="glass-panel p-6 sm:p-8 rounded-2xl sm:rounded-3xl max-w-sm w-full relative border border-indigo-500/40 shadow-2xl text-center flex flex-col items-center gap-3.5">
         
@@ -547,7 +566,6 @@
           <p class="text-xs text-slate-300 mt-0.5">Berikut adalah username terdaftar milik akun Anda:</p>
         </div>
 
-        <!-- Tampilan Username Besar -->
         <div class="w-full bg-slate-900/90 border border-indigo-500/50 rounded-xl p-3 my-0.5 shadow-inner">
           <span id="result-username-text" class="text-lg sm:text-xl font-extrabold text-indigo-400 tracking-wider font-mono select-all">
             -
@@ -567,6 +585,39 @@
     <script>
       // Initialize Lucide Icons
       lucide.createIcons();
+
+      /* -------------------------------------------------------------
+            REAL-TIME COUNTER USAGE SYSTEM
+        ------------------------------------------------------------- */
+      const usageCounterText = document.getElementById("usage-counter-text");
+
+      async function fetchUsageStats() {
+        try {
+          const res = await fetch('/api/stats');
+          const data = await res.json();
+          if (data.status === 'success') {
+            usageCounterText.textContent = Number(data.total_usage).toLocaleString('id-ID');
+          }
+        } catch (err) {
+          console.error('Gagal mengambil statistik:', err);
+          usageCounterText.textContent = '0';
+        }
+      }
+
+      async function incrementUsageCounter() {
+        try {
+          const res = await fetch('/api/stats', { method: 'POST' });
+          const data = await res.json();
+          if (data.status === 'success') {
+            usageCounterText.textContent = Number(data.total_usage).toLocaleString('id-ID');
+          }
+        } catch (err) {
+          console.error('Gagal menambahkan statistik:', err);
+        }
+      }
+
+      // Panggil saat awal web dibuka
+      fetchUsageStats();
 
       /* -------------------------------------------------------------
             ANIMATED SMOOTH CUSTOM TOAST NOTIFICATION SYSTEM
@@ -1202,9 +1253,9 @@
       });
 
       /* -------------------------------------------------------------
-            FUNGSI UNDUH & CETAK DENGAN CEK SESSION LOGIN
+            FUNGSI UNDUH & CETAK DENGAN INCREMENT COUNTER & CEK SESSION
         ------------------------------------------------------------- */
-      btnDownloadSingle.addEventListener("click", () => {
+      btnDownloadSingle.addEventListener("click", async () => {
         if (!uploadedImage || currentWidth <= 0 || currentHeight <= 0) return;
 
         const userSession = localStorage.getItem('user_session');
@@ -1214,14 +1265,19 @@
           return;
         }
 
+        // Jalankan unduhan
         const link = document.createElement("a");
         link.download = `pasfoto_${currentWidth}x${currentHeight}.jpg`;
         link.href = previewCanvas.toDataURL("image/jpeg", 0.95);
         link.click();
+
         showToast("success", "Unduhan Dimulai", "Foto berhasil diunduh.");
+
+        // Otomatis bertambah +1 di database real-time
+        await incrementUsageCounter();
       });
 
-      btnDownloadA4.addEventListener("click", () => {
+      btnDownloadA4.addEventListener("click", async () => {
         if (!uploadedImage || currentWidth <= 0 || currentHeight <= 0) return;
 
         const userSession = localStorage.getItem('user_session');
@@ -1268,7 +1324,11 @@
         link.download = `lembar_cetak_A4_pasfoto.jpg`;
         link.href = a4Canvas.toDataURL("image/jpeg", 0.95);
         link.click();
+
         showToast("success", "Lembar Cetak A4", "Lembar A4 siap dicetak.");
+
+        // Otomatis bertambah +1 di database real-time
+        await incrementUsageCounter();
       });
     </script>
   </body>
