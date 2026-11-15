@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://pasfoto-studio-rosy.vercel.app/sitemap.xml
